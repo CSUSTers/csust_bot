@@ -1,0 +1,22 @@
+{
+    "about": "This is about bot. ", 
+    "friends": {
+        "links": {
+            "https://telegram.me/csuster": "about this link",
+            "https://telegram.me/csust_bot": "about this link"
+        },
+        "friend_link": {
+            "https://example.com": "about this link"
+        }
+    }, 
+    "questions_and_answers": {
+        "questions": {
+            "0": "Q0", 
+            "1": "Q1"
+        },
+        "answers":　{
+            "0": "A0",
+            "1": "A1"
+        }
+    }
+}
