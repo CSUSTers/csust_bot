@@ -10,8 +10,17 @@ record - 人类的本质就是复读机，Bot也是一样的
 
 from telegram.ext import Updater, CommandHandler
 from telegram import error, bot
+from config import TOKEN
 
 import json
+
+
+# for new feature
+data_dict = {}
+QnA_dict = {}
+links_dict = {}
+about_str = ''
+### 
 
 
 def load_json():
@@ -28,7 +37,7 @@ def fiddler(cmdstr):
 
 
 def start(bot, update):
-    update.message.replyText('This is a bot made by some csusters stadying SE,\n' 
+    update.message.reply_text('This is a bot made by some csusters stadying SE,\n' 
                              ' and serve every csusters.',
                              parse_mode='Markdown')
 
@@ -55,7 +64,7 @@ def record(bot, update):
 
 
 def main():
-    updater = Updater(token='TOKEN')
+    updater = Updater(token=TOKEN)
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('say_hello', say_hello))
