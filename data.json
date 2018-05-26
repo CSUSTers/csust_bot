@@ -1,0 +1,22 @@
+{
+    "about": "我是CSUST_bot，几个普通的CSUST用户创建了我。",
+    "links": {
+        "main_links": {
+            "https://telegram.me/csuster": "长理水群",
+            "https://telegram.me/csust_bot": "我的链接哒"
+        },
+        "friend_links": {
+            "https://www.csust.edu.cn": "学校官网"
+        }
+    },
+    "questions_and_answers": {
+        "questions": {
+            "1": "我是谁？",
+            "2": "长理是几本？"
+        },
+        "answers": {
+            "1": "一个想要成为人工智障的Bot。",
+            "2": "天天就知道几本几本，没看到群名称写着职业学院吗。"
+        }
+    }
+}
