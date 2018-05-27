@@ -9,10 +9,12 @@ all_questions - 显示所有的问题
 all_answers - 显示所有的问题和答案
 answer - <Num>  回答指定的问题
 question - 随机问题
+google - <Key Words> Search Google...
+
 ----------
 """
 
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler
 from telegram import error, bot
 from config import TOKEN
 
@@ -71,13 +73,11 @@ def hello_to_all(bot, update):
 
 def record(bot, update):
     replyText = fiddler(update.message.text)
-    update.message.reply_text(replyText)
+    bot.send_message(update.message.chat_id, replyText)
 
 
 def all_links(bot, update):
     global main_links, friend_links
-    replyText = ""
-
     links_list = ["链接: "]
     for link in main_links:
         links_list.append(main_links[link] + ': ' + link)
@@ -118,7 +118,6 @@ def answer(bot, update, args):
     global question_keys, questions, answers
     num = str(args[0])
     logging.debug(num)
-    replyText = ''
     if num in question_keys:
         replyText = '第{}个问题: \nQ: {}\nA: {}'.format(num, questions[num], answers[num])
     else:
@@ -132,6 +131,28 @@ def question(bot, update):
     replyText = '第{}个问题: \nQ: {}\nA: {}'.format(num,
                                                 questions[num], answers[num])
     update.message.reply_text(replyText)
+
+
+def search(bot, update, search_name):
+    if update.message.chat_id < 0:
+        replyText = ('[@{}](tg://user?id={})    \n'.format(update.message.from_user.first_name,
+                                                        update.message.from_user.id))
+    else:
+        replyText = ''
+    replyText = replyText + '这是为您从 {} 找到的: \n'.format(search_name)
+    return replyText
+
+
+def google(key_words):
+    return '  ** [{}](https://www.google.com/search?q={}) **'.format(' '.join(key_words), '%20'.join(key_words))
+
+
+def search_google(bot, update, args):
+    if args.__len__() != 0:
+        replyText = search(bot, update, 'Google') + google(args)
+    else:
+        replyText = '请输入关键字. '
+    bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
 
 
 def main():
@@ -160,8 +181,10 @@ def main():
     dp.add_handler(CommandHandler('all_answers', all_answers))
     dp.add_handler(CommandHandler('answer', answer, pass_args=True))
     dp.add_handler(CommandHandler('question', question))
+    dp.add_handler(CommandHandler('google', search_google, pass_args=True))
     updater.start_polling()
 
 
 if __name__ == '__main__':
     main()
+
