@@ -4,14 +4,13 @@ from random import randrange
 from sys import stderr
 from functools import partial
 from operator import getitem
+import re
 
-errlog = partial(print, file=stderr)
+errlog = partial(print, file=stderr, flush=True)
 template = '''{
-    "reqType":%s,
+    "reqType": %s,
     "perception": {
-        "inputText": {
-            "text": "%s"
-        },
+        %s
         "selfInfo": {
         }
     },
@@ -26,9 +25,15 @@ template = '''{
 你可以与他进行交互。
 """
 class turing_robot:
+    # static attributes.
+    textPerception = '"inputText": {"text": "%s"},'
+    photoPerception = '"inputImage": {"url": "%s"},'
+    mediaPerception = '"inputMedia": {"url": "%s"},'
+    photo_utl_re = re.compile(r'(https?|ftp)://.*\.(jpg|png|jpeg|ico|gif|bmp)')
+
     def __init__(self, userid = None, config_file = 'robotconf.ini'):
         c = ConfigParser()
-        self.userid = userid or randrange(int(1e10))
+        self.userid = userid or "DoesMadeInAbyssTodayUpdated"
         self.errno = 0
         try:
             c.read_file(open('robotconf.ini'))
@@ -42,17 +47,27 @@ class turing_robot:
             self.errno &= 0x02
 
         self.temp = template % ("%d", "%s", self.apikey, self.userid)
-    
+
+    def make_request(self, text=None, photo=None, media=None) -> requests.models.Response:
+        payloads = ""
+        if text is not None:
+            payloads += self.textPerception % (text)
+            reqtype = 0
+        if photo is not None:
+            payloads += self.photoPerception % (photo)
+            reqtype = 1
+        if media is not None:
+            payloads += self.mediaPerception % (media)
+            reqtype = 2
+        if len(payloads) > 0:
+            r = requests.post(self.interface_address, data=(self.temp % (reqtype, payloads)).encode('utf-8'))
+            return r
+
     """
     创建一个文字聊天的 http request。
     """
     def make_literal_request(self, quesion: str) -> requests.models.Response:
-        jsontemp = self.temp % (0, quesion)
-        r = requests.post(self.interface_address, data=jsontemp.encode('utf-8'))
-        if r.status_code == 200:
-            return r
-        else:
-            raise Exception("HTTP request fail with code:", r.status_code)
+        return self.make_request(text=quesion)
     
     """
     更加简洁的接口：问一句话，获取它的结果（封装于 robot_response 类中）
@@ -67,10 +82,6 @@ class turing_robot:
     更更加简洁的接口：问一句话，不管返回什么，统统转化为字符串！
     """
     def interactive(self, quesion: str) -> str:
-        """
-        没错，这东西现在只能发文字。
-        图片功能我猜可能会在一段时间之后出现。
-        """
         return self.ask(quesion).get_response_content()
     
 class robot_response:
