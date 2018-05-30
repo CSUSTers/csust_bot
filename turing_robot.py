@@ -29,14 +29,15 @@ class turing_robot:
     textPerception = '"inputText": {"text": "%s"},'
     photoPerception = '"inputImage": {"url": "%s"},'
     mediaPerception = '"inputMedia": {"url": "%s"},'
-    photo_utl_re = re.compile(r'(https?|ftp)://.*\.(jpg|png|jpeg|ico|gif|bmp)')
+    photo_utl_re = re.compile(r'^(https?|ftp)://.*\.(jpg|png|jpeg|ico|gif|svg|webp)$')
+
 
     def __init__(self, userid = None, config_file = 'robotconf.ini'):
         c = ConfigParser()
         self.userid = userid or "DoesMadeInAbyssTodayUpdated"
         self.errno = 0
         try:
-            c.read_file(open('robotconf.ini'))
+            c.read_file(open(config_file))
             self.interface_address = c['API']['interface_address']
             self.apikey = c['API']['apikey']
         except IOError as e:
@@ -49,6 +50,9 @@ class turing_robot:
         self.temp = template % ("%d", "%s", self.apikey, self.userid)
 
     def make_request(self, text=None, photo=None, media=None) -> requests.models.Response:
+        """
+        请求接口，使用指定的文字、图片或者音频，创建一个 HTTP 请求。
+        """
         payloads = ""
         if text is not None:
             payloads += self.textPerception % (text)
@@ -63,26 +67,24 @@ class turing_robot:
             r = requests.post(self.interface_address, data=(self.temp % (reqtype, payloads)).encode('utf-8'))
             return r
 
-    """
-    创建一个文字聊天的 http request。
-    """
-    def make_literal_request(self, quesion: str) -> requests.models.Response:
-        return self.make_request(text=quesion)
-    
-    """
-    更加简洁的接口：问一句话，获取它的结果（封装于 robot_response 类中）
-    """
-    def ask(self, quesion:str):
-        r = self.make_literal_request(quesion)
+    def make_responce(self, text=None, photo=None, media=None):
+        """
+        更加简洁的接口：给予输入，直接获取它的输出（封装于 robot_response 类中）
+        """
+        r = self.make_request(text, photo, media)
         retjson = r.json()
         results = retjson['results']
         return robot_response(results)
 
-    """
-    更更加简洁的接口：问一句话，不管返回什么，统统转化为字符串！
-    """
-    def interactive(self, quesion: str) -> str:
-        return self.ask(quesion).get_response_content()
+    def interact(self, quesion: str) -> str:
+        """
+        更更加简洁的接口：给予输入，不管返回什么，统统转化为字符串！
+        暂未实现音频功能。
+        """
+        if self.photo_utl_re.match(quesion) is not None:
+            return self.make_responce(photo=quesion).get_response_content()
+        else:
+            return self.make_responce(text=quesion).get_response_content()
     
 class robot_response:
     def __init__(self, results):
