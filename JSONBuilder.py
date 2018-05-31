@@ -29,8 +29,8 @@ class JSONBuilder:
 
 class RequestBuilder(JSONBuilder):
     fields = ["reqType", "perception", "userInfo"]
-    _ck_st = "self\._check_and_set\s*\(\s*(.*),\s*(.*)\s*\)"
-    _ck_replace = "$1.build_new_attribute($2).reduce_to_object(eval($2)) if eval($2) is not None else None"
+    _ck_st = r"self\._check_and_set\s*\(\s*(.*),\s*(.*)\s*\)"
+    _ck_replace = r"$1.build_new_attribute($2).reduce_to_object(eval($2)) if eval($2) is not None else None"
             
 
     def __init__(self):
@@ -66,10 +66,10 @@ class RequestBuilder(JSONBuilder):
         self_info.build_new_attribute("street").reduce_to_object(eval("street")) if eval("street") is not None else None
         return self
 
-    def add_userinfo(self, apikey, userid, groupId=None, userIdName=None):
+    def add_userinfo(self, apiKey, userId, groupId=None, userIdName=None):
         user_info = self._access_field(2)
-        user_info.build_new_attribute("apikey").reduce_to_object(eval("apikey")) if eval("apikey") is not None else None
-        user_info.build_new_attribute("userid").reduce_to_object(eval("userid")) if eval("userid") is not None else None
+        user_info.build_new_attribute("apiKey").reduce_to_object(eval("apiKey")) if eval("apiKey") is not None else None
+        user_info.build_new_attribute("userId").reduce_to_object(eval("userId")) if eval("userId") is not None else None
         user_info.build_new_attribute("groupId").reduce_to_object(eval("groupId")) if eval("groupId") is not None else None
         user_info.build_new_attribute("userIdName").reduce_to_object(eval("userIdName")) if eval("userIdName") is not None else None
         return self
