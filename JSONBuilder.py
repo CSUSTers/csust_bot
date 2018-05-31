@@ -29,9 +29,16 @@ class JSONBuilder:
 
 class RequestBuilder(JSONBuilder):
     fields = ["reqType", "perception", "userInfo"]
-    _ck_st = r"self\._check_and_set\s*\(\s*(.*),\s*(.*)\s*\)"
-    _ck_replace = r"$1.build_new_attribute($2).reduce_to_object(eval($2)) if eval($2) is not None else None"
-            
+
+    # ck_marco -- 用文本编辑器的替换功能实现类似 C 语言的 macro。(什么鬼！)
+    _ck_function_name = r"_check_and_set"
+    _ck_arg_ct = 2
+    _ck_st = r"^{}\s*\(\s*{}\s*\)$".format(_ck_function_name, str.join(r',\s*', [r'(.*)']))
+    _ck_statment = r"$1.build_new_attribute($2).reduce_to_object(eval($2)) if eval($2) is not None else None"
+    @staticmethod
+    def creat_macro_pattern(name, arg_ct):
+        pattern = r"^{}\s*\(\s*{}\s*\)$".format(name, str.join(r',\s*', [r'(.*)'] * arg_ct))
+        return pattern
 
     def __init__(self):
         JSONBuilder.__init__(self)
@@ -49,14 +56,14 @@ class RequestBuilder(JSONBuilder):
         self._access_field(1).build_new_attribute("inputImage") \
                              .build_new_attribute("url")        \
                              .reduce_to_object(url)
-        self._access_field(0).reduce_to_object(max(self._access_field(0).build, 1))
+        self._access_field(0).reduce_to_object(max(self._access_field(0).build(), 1))
         return self
 
     def add_vedio(self, url:str):
         self._access_field(1).build_new_attribute("inputMedia") \
                              .build_new_attribute("url")        \
                              .reduce_to_object(url)
-        self._access_field(0).reduce_to_object(max(self._access_field(0).build, 2))
+        self._access_field(0).reduce_to_object(max(self._access_field(0).build(), 2))
         return self
         
     def add_location(self, city:str, province=None, street=None):
