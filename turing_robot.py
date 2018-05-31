@@ -4,6 +4,7 @@ from random import randrange
 from sys import stderr
 from functools import partial
 from operator import getitem
+from JSONBuilder import RequestBuilder
 import re
 
 errlog = partial(print, file=stderr, flush=True)
