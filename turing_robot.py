@@ -5,21 +5,10 @@ from sys import stderr
 from functools import partial
 from operator import getitem
 from JSONBuilder import RequestBuilder
+from json import dumps
 import re
 
 errlog = partial(print, file=stderr, flush=True)
-template = '''{
-    "reqType": %s,
-    "perception": {
-        %s
-        "selfInfo": {
-        }
-    },
-    "userInfo": {
-        "apiKey": "%s",
-        "userId": "%s"
-    }
-}'''
 
 """
 机器人类。
@@ -27,9 +16,6 @@ template = '''{
 """
 class turing_robot:
     # static attributes.
-    textPerception = '"inputText": {"text": "%s"},'
-    photoPerception = '"inputImage": {"url": "%s"},'
-    mediaPerception = '"inputMedia": {"url": "%s"},'
     photo_utl_re = re.compile(r'^(https?|ftp)://.*\.(jpg|png|jpeg|ico|gif|svg|webp)$')
 
 
@@ -48,31 +34,22 @@ class turing_robot:
             errlog("KeyError: {}，可能是配置文件有误。".format(e))
             self.errno &= 0x02
 
-        self.temp = template % ("%d", "%s", self.apikey, self.userid)
+        self.request_json = RequestBuilder().add_userinfo(self.apikey, self.userid)
 
-    def make_request(self, text=None, photo=None, media=None) -> requests.models.Response:
-        """
-        请求接口，使用指定的文字、图片或者音频，创建一个 HTTP 请求。
-        """
-        payloads = ""
-        if text is not None:
-            payloads += self.textPerception % (text)
-            reqtype = 0
-        if photo is not None:
-            payloads += self.photoPerception % (photo)
-            reqtype = 1
-        if media is not None:
-            payloads += self.mediaPerception % (media)
-            reqtype = 2
-        if len(payloads) > 0:
-            r = requests.post(self.interface_address, data=(self.temp % (reqtype, payloads)).encode('utf-8'))
+    def make_request(self) -> requests.models.Response:
+        r = requests.post(self.interface_address, data=dumps(self.request_json.build()).encode('utf-8'))
+        sc =  r.status_code
+        if sc == 200:
             return r
+        else:
+            r.close()
+            raise requests.HTTPError(f"HTTP ERROR: {sc}")
 
-    def make_responce(self, text=None, photo=None, media=None):
+    def make_responce(self):
         """
         更加简洁的接口：给予输入，直接获取它的输出（封装于 robot_response 类中）
         """
-        r = self.make_request(text, photo, media)
+        r = self.make_request()
         retjson = r.json()
         results = retjson['results']
         return robot_response(results)
@@ -82,10 +59,16 @@ class turing_robot:
         更更加简洁的接口：给予输入，不管返回什么，统统转化为字符串！
         暂未实现音频功能。
         """
-        if self.photo_utl_re.match(quesion) is not None:
-            return self.make_responce(photo=quesion).get_response_content()
-        else:
-            return self.make_responce(text=quesion).get_response_content()
+        try:
+            if self.photo_utl_re.match(quesion) is not None:
+                self.request_json.add_image(quesion)
+                return self.make_responce().get_response_content()
+            else:
+                self.request_json.add_text(quesion)
+                return self.make_responce().get_response_content()
+        except requests.HTTPError as he:
+            errlog(f"err: {he}")
+            return f"请求失败：{he}"
     
 class robot_response:
     def __init__(self, results):

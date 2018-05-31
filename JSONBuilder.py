@@ -64,6 +64,7 @@ class RequestBuilder(JSONBuilder):
         self_info.build_new_attribute("city").reduce_to_object(city)
         self_info.build_new_attribute("province").reduce_to_object(eval("province")) if eval("province") is not None else None
         self_info.build_new_attribute("street").reduce_to_object(eval("street")) if eval("street") is not None else None
+        return self
 
     def add_userinfo(self, apikey, userid, groupId=None, userIdName=None):
         user_info = self._access_field(2)
@@ -71,6 +72,7 @@ class RequestBuilder(JSONBuilder):
         user_info.build_new_attribute("userid").reduce_to_object(eval("userid")) if eval("userid") is not None else None
         user_info.build_new_attribute("groupId").reduce_to_object(eval("groupId")) if eval("groupId") is not None else None
         user_info.build_new_attribute("userIdName").reduce_to_object(eval("userIdName")) if eval("userIdName") is not None else None
+        return self
 
     def _access_field(self, fieldno:int) -> JSONBuilder:
         return self[self.fields[fieldno]]
