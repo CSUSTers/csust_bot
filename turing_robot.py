@@ -6,6 +6,7 @@ from functools import partial
 from operator import getitem
 from JSONBuilder import RequestBuilder
 from json import dumps
+from copy import deepcopy
 import re
 
 errlog = partial(print, file=stderr, flush=True)
@@ -34,16 +35,19 @@ class turing_robot:
             errlog("KeyError: {}，可能是配置文件有误。".format(e))
             self.errno &= 0x02
 
-        self.request_json = RequestBuilder().add_userinfo(self.apikey, self.userid)
+        self.request_json_prototype = RequestBuilder().add_userinfo(self.apikey, self.userid)
+        self.request_json = deepcopy(self.request_json_prototype)
 
     def make_request(self) -> requests.models.Response:
         r = requests.post(self.interface_address, data=dumps(self.request_json.build()).encode('utf-8'))
+        self.request_json = deepcopy(self.request_json_prototype)
         sc =  r.status_code
         if sc == 200:
             return r
         else:
             r.close()
             raise requests.HTTPError(f"HTTP ERROR: {sc}")
+            
 
     def make_responce(self):
         """
