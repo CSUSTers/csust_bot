@@ -97,4 +97,3 @@ class robot_response:
         else:
             return self.grouped_data
 
-

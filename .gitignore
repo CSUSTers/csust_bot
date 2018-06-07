@@ -6,6 +6,12 @@ __pycache__/
 # macOS finder cache
 .DS_store
 
+# f**k M$
+.vscode
+
+# conf
+robotconf.ini
+
 # C extensions
 *.so
 
