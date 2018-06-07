@@ -7,4 +7,6 @@ CSUST一群无聊的人开发，在Telegram上使用。
 只在Python3环境开发测试，不保证Python2能够运行。
 需要安装的库有：
 1. ` python-telegram-bot` 使用pip安装即可
+2. `requests` 用于同图灵机器人发起交流。
+
 
