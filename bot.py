@@ -10,6 +10,8 @@ all_answers - 显示所有的问题和答案
 answer - <Num>  回答指定的问题
 question - 随机问题
 google - <Key Words> Search Google...
+ddg - <Key Words> Search DuckDuckGo...
+search_baidu - <Key Words> 在百毒搜索...
 
 ----------
 """
@@ -53,6 +55,10 @@ def start(bot, update):
     update.message.reply_text('This is a bot made by some csusters stadying SE,\n' 
                               ' and serve every csusters.',
                               parse_mode='Markdown')
+
+
+def banmyself(bot, update):
+    update.message.reply_text('Congratulation, you are banned.')
 
 
 def say_hello(bot, update):
@@ -147,12 +153,40 @@ def google(key_words):
     return '  ** [{}](https://www.google.com/search?q={}) **'.format(' '.join(key_words), '%20'.join(key_words))
 
 
+def baidu(key_words):
+    return '  ** [{}](https://www.baidu.com/s?wd={}) **'.format(' '.join(key_words), '%20'.join(key_words))
+
+
+def ddg(key_words):
+    return '  ** [{}](https://duckduckgo.com/?q={}) **'.format(' '.join(key_words), '%20'.join(key_words))
+
+
 def search_google(bot, update, args):
     if args.__len__() != 0:
         replyText = search(bot, update, 'Google') + google(args)
     else:
         replyText = '请输入关键字. '
     bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
+
+
+def search_baidu(bot, update, args):
+    if args.__len__() != 0:
+        replyText = search(bot, update, '百毒') + baidu(args)
+    else:
+        replyText = '请输入关键字. '
+    bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
+
+
+def search_ddg(bot, update, args):
+    if args.__len__() != 0:
+        replyText = search(bot, update, 'DuckDuckGo') + ddg(args)
+    else:
+        replyText = '请输入关键字. '
+    bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
+
+
+def test(bot, update):
+    bot.send_message(chat_id=update.message.chat_id, text="你好，该bot正在测试功能")
 
 
 def main():
@@ -172,6 +206,8 @@ def main():
 
     updater = Updater(token=TOKEN)
     dp = updater.dispatcher
+    dp.add_handler(MessageHandler(Filters.text, test))
+    dp.add_handler(CommandHandler('banmyself', banmyself))
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('say_hello', say_hello))
     dp.add_handler(CommandHandler('hello_to_all', hello_to_all))
@@ -182,6 +218,8 @@ def main():
     dp.add_handler(CommandHandler('answer', answer, pass_args=True))
     dp.add_handler(CommandHandler('question', question))
     dp.add_handler(CommandHandler('google', search_google, pass_args=True))
+    dp.add_handler(CommandHandler('search_baidu', search_baidu, pass_args=True))
+    dp.add_handler(CommandHandler('ddg', search_ddg, pass_args=True))
     updater.start_polling()
 
 
