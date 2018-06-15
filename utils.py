@@ -19,13 +19,5 @@ def url_encode(s: str):
     encoded = s.encode("utf-8")
     firstprocess = starmap(add, zip(cycle("%"), 
                    starmap(mod, zip(repeat("%.2x"), encoded))))
-    return reduce(add, joinl(firstprocess, type("str")))
+    return reduce(add, firstprocess)
     
-
-def joinl(itor, monad = type([])):
-    for x in itor:
-        if type(x) is monad:
-            for y in x:
-                yield y
-        else:
-            yield x
