@@ -13,6 +13,7 @@ google - <Key Words> Search Google...
 ddg - <Key Words> Search DuckDuckGo...
 search_baidu - <Key Words> 在百毒搜索...
 
+
 ----------
 """
 
@@ -189,6 +190,14 @@ def test(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text="你好，该bot正在测试功能")
 
 
+def boot(bot, update):
+	update.message.reply_text('早上好，今天也是元气满满的一天哦！')
+
+
+def sleep(bot, update):
+    update.message.reply_text('晚安，明天醒来就能看到我哦！')
+
+
 def main():
     global data_dict, QnA_dict, links_dict, about_str,\
         question_keys, questions, answers, main_links, friend_links
@@ -220,6 +229,9 @@ def main():
     dp.add_handler(CommandHandler('google', search_google, pass_args=True))
     dp.add_handler(CommandHandler('search_baidu', search_baidu, pass_args=True))
     dp.add_handler(CommandHandler('ddg', search_ddg, pass_args=True))
+    dp.add_handler(CommandHandler('boot', boot))
+    dp.add_handler(CommandHandler('poweroff', sleep))
+    dp.add_handler(CommandHandler('shutdown', sleep))
     updater.start_polling()
 
 
