@@ -19,11 +19,13 @@ search_baidu - <Key Words> 在百毒搜索...
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler
 from telegram import error, bot
+
 from config import TOKEN
 
 import json
 import random
 import logging
+import utils
 
 
 # for new feature
@@ -150,16 +152,20 @@ def search(bot, update, search_name):
     return replyText
 
 
+def encode_url_words(l):
+    return utils.url_encode(' '.join(l))
+
+
 def google(key_words):
-    return '  ** [{}](https://www.google.com/search?q={}) **'.format(' '.join(key_words), '%20'.join(key_words))
+    return '  ** [{}](https://www.google.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words), parse_mode='Markdown')
 
 
 def baidu(key_words):
-    return '  ** [{}](https://www.baidu.com/s?wd={}) **'.format(' '.join(key_words), '%20'.join(key_words))
+    return '  ** [{}](https://www.baidu.com/s?wd={}) **'.format(' '.join(key_words), encode_url_words(key_words), parse_mode='Markdown')
 
 
 def ddg(key_words):
-    return '  ** [{}](https://duckduckgo.com/?q={}) **'.format(' '.join(key_words), '%20'.join(key_words))
+    return '  ** [{}](https://duckduckgo.com/?q={}) **'.format(' '.join(key_words), encode_url_words(key_words), parse_mode='Markdown')
 
 
 def search_google(bot, update, args):
