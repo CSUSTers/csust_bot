@@ -77,7 +77,7 @@ def say_hello(bot, update):
 def hello_to_all(bot, update):
     chatId = update.message.chat_id
     replyText = '大家好，我是一只只会嗦hello的咸鱼.\n'
-    update.message.reply_text(replyText)
+    bot.send_message(update.message.chat_id, replyText)
 
 
 def record(bot, update):
