@@ -4,6 +4,7 @@ commands:
 say_hello - 我是一只只会嗦hello的咸鱼
 hello_to_all - Say hello to all group members
 record - 人类的本质就是复读机，Bot也是一样的
+real_record - 复读机...复读机...复读机...复读机...
 all_links - 这里有一些链接，如果本校同学想要添加友链也可以联系哦
 all_questions - 显示所有的问题
 all_answers - 显示所有的问题和答案
@@ -11,6 +12,7 @@ answer - <Num>  回答指定的问题
 question - 随机问题
 google - <Key Words> Search Google...
 ddg - <Key Words> Search DuckDuckGo...
+bing - <Key Words> Search Bing...
 search_baidu - <Key Words> 在百毒搜索...
 
 
@@ -39,6 +41,9 @@ friend_links = []
 questions = {}
 answers = {}
 ###
+
+# For real_record
+conti = False
 
 
 def load_json():
@@ -83,6 +88,24 @@ def hello_to_all(bot, update):
 def record(bot, update):
     replyText = fiddler(update.message.text)
     bot.send_message(update.message.chat_id, replyText)
+
+
+def real_record(bot, update):
+    global conti
+    conti = True
+    replyText = fiddler(update.message.text)
+    #while conti:
+    #    bot.send_message(update.message.chat_id, replyText)
+    update.message.reply_text('这个功能目前不可控，暂不开放')
+
+
+def stop_record(bot, update):
+	global conti
+	if conti:
+		conti = False
+		bot.send_message(update.message.chat_id, '已停止')
+	else:
+		update.message.reply_text('你在嗦什么')
 
 
 def all_links(bot, update):
@@ -168,6 +191,10 @@ def ddg(key_words):
     return '  ** [{}](https://duckduckgo.com/?q={}) **'.format(' '.join(key_words), encode_url_words(key_words), parse_mode='Markdown')
 
 
+def bing(key_words):
+    return '  ** [{}](https://bing.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words), parse_mode='Markdown')
+
+
 def search_google(bot, update, args):
     if args.__len__() != 0:
         replyText = search(bot, update, 'Google') + google(args)
@@ -187,6 +214,14 @@ def search_baidu(bot, update, args):
 def search_ddg(bot, update, args):
     if args.__len__() != 0:
         replyText = search(bot, update, 'DuckDuckGo') + ddg(args)
+    else:
+        replyText = '请输入关键字. '
+    bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
+
+
+def search_bing(bot, update, args):
+    if args.__len__() != 0:
+        replyText = search(bot, update, '巨硬御用的Bing') + bing(args)
     else:
         replyText = '请输入关键字. '
     bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
@@ -227,6 +262,8 @@ def main():
     dp.add_handler(CommandHandler('say_hello', say_hello))
     dp.add_handler(CommandHandler('hello_to_all', hello_to_all))
     dp.add_handler(CommandHandler('record', record))
+    dp.add_handler(CommandHandler('real_record', real_record))
+    dp.add_handler(CommandHandler('stop_record', stop_record))
     dp.add_handler(CommandHandler('all_links', all_links))
     dp.add_handler(CommandHandler('all_questions', all_questions))
     dp.add_handler(CommandHandler('all_answers', all_answers))
@@ -235,6 +272,7 @@ def main():
     dp.add_handler(CommandHandler('google', search_google, pass_args=True))
     dp.add_handler(CommandHandler('search_baidu', search_baidu, pass_args=True))
     dp.add_handler(CommandHandler('ddg', search_ddg, pass_args=True))
+    dp.add_handler(CommandHandler('bing', search_bing, pass_args=True))
     dp.add_handler(CommandHandler('boot', boot))
     dp.add_handler(CommandHandler('poweroff', sleep))
     dp.add_handler(CommandHandler('shutdown', sleep))
