@@ -6,7 +6,8 @@
             "https://telegram.me/csust_bot": "我的链接哒"
         },
         "friend_links": {
-            "https://www.csust.edu.cn": "学校官网"
+            "http://www.csust.edu.cn": "学校官网",
+            "https://naiveindex.site": "Sometimes Naive Site"
         }
     },
     "questions_and_answers": {
