@@ -2,7 +2,7 @@ import sys, os
 
 def make_service(setup_path):
     with open('tgbot_template.service', 'r') as file:
-        template: str = file.read()
+        template = file.read()
     
     with open('tgbot.service', 'w') as file:
         path_to_exec = os.path.join(setup_path, 'bot.py')
