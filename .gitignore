@@ -8,6 +8,7 @@ __pycache__/
 
 # f**k M$
 .vscode
+.idea
 
 # conf
 robotconf.ini
@@ -111,3 +112,4 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+config.py
