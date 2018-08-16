@@ -3,7 +3,7 @@ Description=CSUST TG Bot
 
 [Service]
 Type=forking
-ExecStart=python3 {}/bot.py
+ExecStart=python3 {}
 
 [Install]
 WantedBy=multi-user.target
