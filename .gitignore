@@ -8,6 +8,7 @@ __pycache__/
 
 # f**k M$
 .vscode
+.idea
 
 # conf
 robotconf.ini
