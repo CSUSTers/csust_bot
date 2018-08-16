@@ -75,8 +75,10 @@ def say_hello(bot, update):
     try:
         update.message.reply_text(replyText,
                                   parse_mode='Markdown')
+
     # except error.NetworkError:
     #     update.message.reply_text(replyText)
+
 
 
 def hello_to_all(bot, update):
