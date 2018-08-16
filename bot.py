@@ -23,11 +23,13 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Inlin
 from telegram import error, bot
 
 from config import TOKEN
+from weather_query import weather_qy
 
 import json
 import random
 import logging
 import utils
+import requests
 
 
 # for new feature
@@ -72,13 +74,9 @@ def banmyself(bot, update):
 def say_hello(bot, update):
     # chatId = update.message.chat_id
     replyText = "Hello.\n"
-    #try:
-    #    update.message.reply_text(replyText,
-    #                              parse_mode='Markdown')
-    # except error.NetworkError:
-    #     update.message.reply_text(replyText)
-    update.message.reply_text(replyText, 
-                                parse_mode='Markdown')
+    update.message.reply_text(replyText,
+                                  parse_mode='Markdown')
+
 
 
 def hello_to_all(bot, update):
@@ -241,6 +239,8 @@ def sleep(bot, update):
     update.message.reply_text('晚安，明天醒来就能看到我哦！')
 
 
+
+
 def main():
     global data_dict, QnA_dict, links_dict, about_str,\
         question_keys, questions, answers, main_links, friend_links
@@ -278,6 +278,7 @@ def main():
     dp.add_handler(CommandHandler('boot', boot))
     dp.add_handler(CommandHandler('poweroff', sleep))
     dp.add_handler(CommandHandler('shutdown', sleep))
+    dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
     updater.start_polling()
 
 
