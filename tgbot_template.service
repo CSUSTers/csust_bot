@@ -1,0 +1,9 @@
+[Unit]
+Description=CSUST TG Bot
+
+[Service]
+Type=forking
+ExecStart=python3 {}/bot.py
+
+[Install]
+WantedBy=multi-user.target
