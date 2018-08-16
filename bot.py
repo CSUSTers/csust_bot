@@ -72,13 +72,13 @@ def banmyself(bot, update):
 def say_hello(bot, update):
     # chatId = update.message.chat_id
     replyText = "Hello.\n"
-    try:
-        update.message.reply_text(replyText,
-                                  parse_mode='Markdown')
-
+    #try:
+    #    update.message.reply_text(replyText,
+    #                              parse_mode='Markdown')
     # except error.NetworkError:
     #     update.message.reply_text(replyText)
-
+    update.message.reply_text(replyText, 
+                                parse_mode='Markdown')
 
 
 def hello_to_all(bot, update):
