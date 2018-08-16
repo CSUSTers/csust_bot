@@ -4,7 +4,7 @@ from random import randrange
 from sys import stderr
 from functools import partial
 from operator import getitem
-from JSONBuilder import RequestBuilder
+from utils import RequestBuilder
 from json import dumps
 from copy import deepcopy
 import re
