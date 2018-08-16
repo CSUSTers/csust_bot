@@ -70,17 +70,17 @@ def banmyself(bot, update):
 
 
 def say_hello(bot, update):
-    chatId = update.message.chat_id
+    # chatId = update.message.chat_id
     replyText = "Hello.\n"
     try:
         update.message.reply_text(replyText,
                                   parse_mode='Markdown')
-    except error.NetworkError:
-        update.message.reply_text(replyText)
+    # except error.NetworkError:
+    #     update.message.reply_text(replyText)
 
 
 def hello_to_all(bot, update):
-    chatId = update.message.chat_id
+    # chatId = update.message.chat_id
     replyText = '大家好，我是一只只会嗦hello的咸鱼.\n'
     bot.send_message(update.message.chat_id, replyText)
 
