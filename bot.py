@@ -70,14 +70,15 @@ def start(bot, update):
 def banmyself(bot, update):
     chatid = update.message.chat_id
     user_id = update.message.from_user.id
-    until_time = update.message.date + datetime.timedelta(seconds=66)
+    ban_sec = 66
+    until_time = update.message.date + datetime.timedelta(seconds=ban_sec)
     can_send_messages = False
     can_send_media_messages = False
     can_send_other_messages = False
     can_add_web_page_previews = False
     bot.restrict_chat_member(chatid, user_id, until_time, can_send_messages,
                              can_send_media_messages, can_send_other_messages, can_add_web_page_previews)
-    update.message.reply_text('Congratulation, you are banned.')
+    update.message.reply_text('Congratulation! you have been banned for '+str(ban_sec)+' seconds~')
 
 
 def say_hello(bot, update):
