@@ -18,6 +18,7 @@ weather - <CityName> 查询天气
 
 ----------
 """
+import datetime
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler
 from telegram import error, bot
@@ -30,7 +31,6 @@ import random
 import logging
 import utils
 import requests
-
 
 # for new feature
 data_dict = {}
@@ -62,12 +62,21 @@ def fiddler(cmdstr):
 
 
 def start(bot, update):
-    update.message.reply_text('This is a bot made by some csusters stadying SE,\n' 
+    update.message.reply_text('This is a bot made by some csusters stadying SE,\n'
                               ' and serve every csusters.',
                               parse_mode='Markdown')
 
 
 def banmyself(bot, update):
+    chatid = update.message.chat_id
+    user_id = update.message.from_user.id
+    until_time = update.message.date + datetime.timedelta(seconds=66)
+    can_send_messages = False
+    can_send_media_messages = False
+    can_send_other_messages = False
+    can_add_web_page_previews = False
+    bot.restrict_chat_member(chatid, user_id, until_time, can_send_messages,
+                             can_send_media_messages, can_send_other_messages, can_add_web_page_previews)
     update.message.reply_text('Congratulation, you are banned.')
 
 
@@ -75,8 +84,7 @@ def say_hello(bot, update):
     # chatId = update.message.chat_id
     replyText = "Hello.\n"
     update.message.reply_text(replyText,
-                                  parse_mode='Markdown')
-
+                              parse_mode='Markdown')
 
 
 def hello_to_all(bot, update):
@@ -94,18 +102,18 @@ def real_record(bot, update):
     global conti
     conti = True
     replyText = fiddler(update.message.text)
-    #while conti:
+    # while conti:
     #    bot.send_message(update.message.chat_id, replyText)
     update.message.reply_text('这个功能目前不可控，暂不开放')
 
 
 def stop_record(bot, update):
-	global conti
-	if conti:
-		conti = False
-		bot.send_message(update.message.chat_id, '已停止')
-	else:
-		update.message.reply_text('你在嗦什么')
+    global conti
+    if conti:
+        conti = False
+        bot.send_message(update.message.chat_id, '已停止')
+    else:
+        update.message.reply_text('你在嗦什么')
 
 
 def all_links(bot, update):
@@ -168,7 +176,7 @@ def question(bot, update):
 def search(bot, update, search_name):
     if update.message.chat_id < 0:
         replyText = ('[@{}](tg://user?id={})    \n'.format(update.message.from_user.first_name,
-                                                        update.message.from_user.id))
+                                                           update.message.from_user.id))
     else:
         replyText = ''
     replyText = replyText + '这是为您从 {} 找到的: \n'.format(search_name)
@@ -180,19 +188,23 @@ def encode_url_words(l):
 
 
 def google(key_words):
-    return '  ** [{}](https://www.google.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words), parse_mode='Markdown')
+    return '  ** [{}](https://www.google.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
+                                                                     parse_mode='Markdown')
 
 
 def baidu(key_words):
-    return '  ** [{}](https://www.baidu.com/s?wd={}) **'.format(' '.join(key_words), encode_url_words(key_words), parse_mode='Markdown')
+    return '  ** [{}](https://www.baidu.com/s?wd={}) **'.format(' '.join(key_words), encode_url_words(key_words),
+                                                                parse_mode='Markdown')
 
 
 def ddg(key_words):
-    return '  ** [{}](https://duckduckgo.com/?q={}) **'.format(' '.join(key_words), encode_url_words(key_words), parse_mode='Markdown')
+    return '  ** [{}](https://duckduckgo.com/?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
+                                                               parse_mode='Markdown')
 
 
 def bing(key_words):
-    return '  ** [{}](https://bing.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words), parse_mode='Markdown')
+    return '  ** [{}](https://bing.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
+                                                               parse_mode='Markdown')
 
 
 def search_google(bot, update, args):
@@ -232,17 +244,15 @@ def test(bot, update):
 
 
 def boot(bot, update):
-	update.message.reply_text('早上好，今天也是元气满满的一天哦！')
+    update.message.reply_text('早上好，今天也是元气满满的一天哦！')
 
 
 def sleep(bot, update):
     update.message.reply_text('晚安，明天醒来就能看到我哦！')
 
 
-
-
 def main():
-    global data_dict, QnA_dict, links_dict, about_str,\
+    global data_dict, QnA_dict, links_dict, about_str, \
         question_keys, questions, answers, main_links, friend_links
     data_dict = load_json()
 
@@ -284,4 +294,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
