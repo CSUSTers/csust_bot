@@ -15,6 +15,7 @@ ddg - <Key Words> Search DuckDuckGo...
 bing - <Key Words> Search Bing...
 search_baidu - <Key Words> 在百毒搜索...
 weather - <CityName> 查询天气
+banmyself - ban yourself
 
 ----------
 """
@@ -70,15 +71,18 @@ def start(bot, update):
 def banmyself(bot, update):
     chatid = update.message.chat_id
     user_id = update.message.from_user.id
-    ban_sec = 66
+    ban_sec = random.sample(range(36, 67))
     until_time = update.message.date + datetime.timedelta(seconds=ban_sec)
     can_send_messages = False
     can_send_media_messages = False
     can_send_other_messages = False
     can_add_web_page_previews = False
-    bot.restrict_chat_member(chatid, user_id, until_time, can_send_messages,
+    success = bot.restrict_chat_member(chatid, user_id, until_time, can_send_messages,
                              can_send_media_messages, can_send_other_messages, can_add_web_page_previews)
-    update.message.reply_text('Congratulation! you have been banned for '+str(ban_sec)+' seconds~')
+    if success:
+        update.message.reply_text('Congratulation! you have been banned for '+str(ban_sec)+' seconds~')
+    else:
+        update.message.reply_text('神秘力量使我无法满足你的欲望')
 
 
 def say_hello(bot, update):
@@ -240,10 +244,6 @@ def search_bing(bot, update, args):
     bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
 
 
-def test(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text="你好，该bot正在测试功能")
-
-
 def boot(bot, update):
     update.message.reply_text('早上好，今天也是元气满满的一天哦！')
 
@@ -269,7 +269,6 @@ def main():
 
     updater = Updater(token=TOKEN)
     dp = updater.dispatcher
-    dp.add_handler(MessageHandler(Filters.text, test))
     dp.add_handler(CommandHandler('banmyself', banmyself))
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('say_hello', say_hello))
