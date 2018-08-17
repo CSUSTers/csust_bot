@@ -106,9 +106,9 @@ def record(bot, update):
 def real_record(bot, update):
     global conti
     if conti:
-        update.send_message(update.message.chat_id, '好累啊,休息休息...')
+        bot.send_message(update.message.chat_id, '好累啊,休息休息...')
     else:
-        update.send_message(update.message.chat_id, '复读机!复读机!')
+        bot.send_message(update.message.chat_id, '复读机!复读机!')
     conti = ~conti
     #replyText = fiddler(update.message.text)
     # while conti:
@@ -251,8 +251,6 @@ def sleep(bot, update):
 def read_message(bot, update):
     global conti
     message = update.message.text
-    if message.find('banmyself') != -1:
-        banmyself(bot, update)
     if conti:
         bot.send_message(update.message.chat_id, message)
 
