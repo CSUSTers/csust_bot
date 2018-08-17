@@ -4,7 +4,7 @@ commands:
 say_hello - 我是一只只会嗦hello的咸鱼
 hello_to_all - Say hello to all group members
 record - 人类的本质就是复读机，Bot也是一样的
-real_record - 复读机...复读机...复读机...复读机...
+real_record - 复读机...复读机...复读机的开关
 all_links - 这里有一些链接，如果本校同学想要添加友链也可以联系哦
 all_questions - 显示所有的问题
 all_answers - 显示所有的问题和答案
@@ -82,7 +82,7 @@ def banmyself(bot, update):
     if success:
         update.message.reply_text('Congratulation! you have been banned for '+str(ban_sec)+' seconds~')
     else:
-        update.message.reply_text('神秘力量使我无法满足你的欲望')
+        update.message.reply_text('神秘的力量使我无法满足你的欲望')
 
 
 def say_hello(bot, update):
@@ -105,20 +105,16 @@ def record(bot, update):
 
 def real_record(bot, update):
     global conti
-    conti = True
-    replyText = fiddler(update.message.text)
+    if conti:
+        update.send_message(update.message.chat_id, '好累啊,休息休息...')
+    else:
+        update.send_message(update.message.chat_id, '复读机!复读机!')
+    conti = ~conti
+    #replyText = fiddler(update.message.text)
     # while conti:
     #    bot.send_message(update.message.chat_id, replyText)
-    update.message.reply_text('这个功能目前不可控，暂不开放')
+    #update.message.reply_text('这个功能目前不可控，暂不开放')
 
-
-def stop_record(bot, update):
-    global conti
-    if conti:
-        conti = False
-        bot.send_message(update.message.chat_id, '已停止')
-    else:
-        update.message.reply_text('你在嗦什么')
 
 
 def all_links(bot, update):
@@ -252,6 +248,16 @@ def sleep(bot, update):
     update.message.reply_text('晚安，明天醒来就能看到我哦！')
 
 
+def read_message(bot, update):
+    global conti
+    message = update.message.text
+    if message.find('banmyself') != -1:
+        banmyself(bot, update)
+    if conti:
+        update.message.reply_text(message)
+
+
+
 def main():
     global data_dict, QnA_dict, links_dict, about_str, \
         question_keys, questions, answers, main_links, friend_links
@@ -269,13 +275,13 @@ def main():
 
     updater = Updater(token=TOKEN)
     dp = updater.dispatcher
+    dp.add_handler(MessageHandler(Filters.text, read_message))
     dp.add_handler(CommandHandler('banmyself', banmyself))
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('say_hello', say_hello))
     dp.add_handler(CommandHandler('hello_to_all', hello_to_all))
     dp.add_handler(CommandHandler('record', record))
     dp.add_handler(CommandHandler('real_record', real_record))
-    dp.add_handler(CommandHandler('stop_record', stop_record))
     dp.add_handler(CommandHandler('all_links', all_links))
     dp.add_handler(CommandHandler('all_questions', all_questions))
     dp.add_handler(CommandHandler('all_answers', all_answers))
