@@ -71,7 +71,7 @@ def start(bot, update):
 def banmyself(bot, update):
     chatid = update.message.chat_id
     user_id = update.message.from_user.id
-    ban_sec = random.sample(range(36, 67))
+    ban_sec = random.choice(range(36, 67))
     until_time = update.message.date + datetime.timedelta(seconds=ban_sec)
     can_send_messages = False
     can_send_media_messages = False
