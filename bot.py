@@ -104,7 +104,7 @@ def record(bot, update):
 
 def real_record(bot, update):
     chatid = update.message.chat_id
-    if chat_id_dict.get(chatid, False):
+    if chat_id_dict.get(chatid, True):
         bot.send_message(update.message.chat_id, '复读机!复读机!')
         chat_id_dict[chatid] = True
     else:
