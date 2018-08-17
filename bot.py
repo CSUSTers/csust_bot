@@ -250,7 +250,7 @@ def sleep(bot, update):
 def read_message(bot, update):
     message = update.message.text
     chatid = update.message.chat_id
-    if chat_id_dict[chatid]:
+    if chatid in chat_id_dict and chat_id_dict[chatid]:
         bot.send_message(chatid, message)
 
 
