@@ -15,7 +15,7 @@ ddg - <Key Words> Search DuckDuckGo...
 bing - <Key Words> Search Bing...
 search_baidu - <Key Words> 在百毒搜索...
 weather - <CityName> 查询天气
-banmyself - ban yourself
+banmyself - 把自己ban掉[36,66]秒
 
 ----------
 """
@@ -43,10 +43,9 @@ main_links = []
 friend_links = []
 questions = {}
 answers = {}
-###
+chat_id_dict = {}
 
-# For real_record
-conti = False
+###
 
 
 def load_json():
@@ -78,9 +77,9 @@ def banmyself(bot, update):
     can_send_other_messages = False
     can_add_web_page_previews = False
     success = bot.restrict_chat_member(chatid, user_id, until_time, can_send_messages,
-                             can_send_media_messages, can_send_other_messages, can_add_web_page_previews)
+                                       can_send_media_messages, can_send_other_messages, can_add_web_page_previews)
     if success:
-        update.message.reply_text('Congratulation! you have been banned for '+str(ban_sec)+' seconds~')
+        update.message.reply_text('Congratulation! you have been banned for ' + str(ban_sec) + ' seconds~')
     else:
         update.message.reply_text('神秘的力量使我无法满足你的欲望')
 
@@ -104,17 +103,17 @@ def record(bot, update):
 
 
 def real_record(bot, update):
-    global conti
-    if conti:
-        bot.send_message(update.message.chat_id, '好累啊,休息休息...')
-    else:
+    chatid = update.message.chat_id
+    if chat_id_dict.get(chatid, False):
         bot.send_message(update.message.chat_id, '复读机!复读机!')
-    conti = ~conti
-    #replyText = fiddler(update.message.text)
+        chat_id_dict[chatid] = True
+    else:
+        bot.send_message(update.message.chat_id, '好累啊,休息休息...')
+        chat_id_dict[chatid] = False
+    # replyText = fiddler(update.message.text)
     # while conti:
     #    bot.send_message(update.message.chat_id, replyText)
-    #update.message.reply_text('这个功能目前不可控，暂不开放')
-
+    # update.message.reply_text('这个功能目前不可控，暂不开放')
 
 
 def all_links(bot, update):
@@ -249,11 +248,10 @@ def sleep(bot, update):
 
 
 def read_message(bot, update):
-    global conti
     message = update.message.text
-    if conti:
-        bot.send_message(update.message.chat_id, message)
-
+    chatid = update.message.chat_id
+    if chat_id_dict[chatid]:
+        bot.send_message(chatid, message)
 
 
 def main():
