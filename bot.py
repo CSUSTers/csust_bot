@@ -104,12 +104,13 @@ def record(bot, update):
 
 def real_record(bot, update):
     chatid = update.message.chat_id
-    if chat_id_dict.get(chatid, True):
-        bot.send_message(update.message.chat_id, '复读机!复读机!')
-        chat_id_dict[chatid] = True
-    else:
+    if chatid in chat_id_dict and chat_id_dict[chatid]:
         bot.send_message(update.message.chat_id, '好累啊,休息休息...')
         chat_id_dict[chatid] = False
+    else:
+        bot.send_message(update.message.chat_id, '复读机!复读机!')
+        chat_id_dict[chatid] = True
+
     # replyText = fiddler(update.message.text)
     # while conti:
     #    bot.send_message(update.message.chat_id, replyText)
