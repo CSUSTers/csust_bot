@@ -254,7 +254,7 @@ def read_message(bot, update):
     if message.find('banmyself') != -1:
         banmyself(bot, update)
     if conti:
-        update.message.reply_text(message)
+        bot.send_message(update.message.chat_id, message)
 
 
 
