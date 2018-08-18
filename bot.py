@@ -22,7 +22,7 @@ banmyself - 把自己ban掉[36,66]秒
 import datetime
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler
-from telegram import error, bot
+from telegram import error, Bot, Chat, User, Message, ChatMember
 
 from config import TOKEN
 from weather_query import weather_qy
@@ -43,7 +43,7 @@ main_links = []
 friend_links = []
 questions = {}
 answers = {}
-chat_id_dict = {}
+chat_id_list = []
 
 ###
 
@@ -70,18 +70,26 @@ def start(bot, update):
 def banmyself(bot, update):
     chatid = update.message.chat_id
     user_id = update.message.from_user.id
-    ban_sec = random.choice(range(36, 67))
-    until_time = update.message.date + datetime.timedelta(seconds=ban_sec)
-    can_send_messages = False
-    can_send_media_messages = False
-    can_send_other_messages = False
-    can_add_web_page_previews = False
-    success = bot.restrict_chat_member(chatid, user_id, until_time, can_send_messages,
-                                       can_send_media_messages, can_send_other_messages, can_add_web_page_previews)
-    if success:
-        update.message.reply_text('Congratulation! you have been banned for ' + str(ban_sec) + ' seconds~')
+    if update.message.chat.type == 'private':
+        update.message.reply_text('我觉得布星~')
+    elif bot.get_chat_member(chatid, bot.id).status == 'administrator':
+        if bot.get_chat_member(chatid, user_id).status in ['administrator','creator']:
+            update.message.reply_text('神秘的力量使我无法满足你的欲望')
+        else:
+            ban_sec = random.choice(range(36, 67))
+            until_time = update.message.date + datetime.timedelta(seconds=ban_sec)
+            can_send_messages = False
+            can_send_media_messages = False
+            can_send_other_messages = False
+            can_add_web_page_previews = False
+            success = bot.restrict_chat_member(chatid, user_id, until_time, can_send_messages,
+                                            can_send_media_messages, can_send_other_messages, can_add_web_page_previews)
+            if success:
+                update.message.reply_text('Congratulation! you have been banned for ' + str(ban_sec) + ' seconds~')
+            else:
+                update.message.reply_text('受到电磁干扰...')
     else:
-        update.message.reply_text('神秘的力量使我无法满足你的欲望')
+        update.message.reply_text('可惜我失去了力量...')
 
 
 def say_hello(bot, update):
@@ -104,12 +112,12 @@ def record(bot, update):
 
 def real_record(bot, update):
     chatid = update.message.chat_id
-    if chatid in chat_id_dict and chat_id_dict[chatid]:
+    if chatid in chat_id_list:
         bot.send_message(update.message.chat_id, '好累啊,休息休息...')
-        chat_id_dict[chatid] = False
+        chat_id_list.remove(chatid)
     else:
         bot.send_message(update.message.chat_id, '复读机!复读机!')
-        chat_id_dict[chatid] = True
+        chat_id_list.append(chatid)
 
     # replyText = fiddler(update.message.text)
     # while conti:
@@ -251,7 +259,7 @@ def sleep(bot, update):
 def read_message(bot, update):
     message = update.message.text
     chatid = update.message.chat_id
-    if chatid in chat_id_dict and chat_id_dict[chatid]:
+    if chatid in chat_id_list:
         bot.send_message(chatid, message)
 
 
