@@ -32,6 +32,7 @@ import random
 import logging
 import utils
 import requests
+import sys, os
 
 # for new feature
 data_dict = {}
@@ -304,4 +305,6 @@ def main():
 
 
 if __name__ == '__main__':
+    path = os.path.dirname(os.path.abspath('__file__'))
+    os.chdir(path)
     main()
