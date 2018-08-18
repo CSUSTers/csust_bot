@@ -56,7 +56,7 @@ def load_json():
 
 def fiddler(cmdstr):
     l = cmdstr.split(' ', 1)
-    if l[0].startswith('/')
+    if l[0].startswith('/'):
         return l[1]
     else:
         return cmdstr
