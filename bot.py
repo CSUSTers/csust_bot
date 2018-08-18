@@ -16,6 +16,7 @@ bing - <Key Words> Search Bing...
 search_baidu - <Key Words> 在百毒搜索...
 weather - <CityName> 查询天气
 banmyself - 把自己ban掉[36,66]秒
+fake_banmyself - 虚假的ban自己
 
 ----------
 """
@@ -46,7 +47,6 @@ questions = {}
 answers = {}
 
 # for real_record
-conti = []
 chat_id_list = []
 
 def load_json():
@@ -91,6 +91,14 @@ def banmyself(bot, update):
                 update.message.reply_text('受到电磁干扰...')
     else:
         update.message.reply_text('可惜我失去了力量...')
+
+
+def fake_banmyself(bot, update):
+    chatID = update.message.chat_id
+    if chatID > 0:
+        update.message.reply_text("你在嗦什么，我怎么听不懂。")
+    else:
+        update.message.reply_text("Congratulation! Now, you are banned.")
 
 
 def say_hello(bot, update):
@@ -283,6 +291,7 @@ def main():
     dp = updater.dispatcher
     dp.add_handler(MessageHandler(Filters.text, read_message))
     dp.add_handler(CommandHandler('banmyself', banmyself))
+    dp.add_handler(CommandHandler('fake_banmyself', fake_banmyself))
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('say_hello', say_hello))
     dp.add_handler(CommandHandler('hello_to_all', hello_to_all))
