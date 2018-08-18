@@ -53,14 +53,13 @@ def load_json():
     with open("data.json", "r") as file:
         return json.load(file)
 
-"""
+
 def fiddler(cmdstr):
-    l = cmdstr.split(' ')
-    if '/' in l[0]:
-        return ' '.join(l[1:])
+    l = cmdstr.split(' ', 1)
+    if l[0].startswith('/')
+        return l[1]
     else:
         return cmdstr
-"""
 
 
 def start(bot, update):
