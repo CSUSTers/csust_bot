@@ -49,6 +49,7 @@ answers = {}
 # for real_record
 chat_id_list = []
 
+
 def load_json():
     with open("data.json", "r") as file:
         return json.load(file)
