@@ -135,7 +135,7 @@ class SecGetter:
     def format2sec(self, s:str):
         secs = 0
         l = s.split(':')
-        if len(l) in [2, 3]:
+        if not len(l) in [2, 3]:
             return 0
         for _1s in l:
             secs *= 60
