@@ -120,7 +120,7 @@ class SecGetter:
         else:
             return 0
 
-    def mouth2sec(self, s: str):
+    def month2sec(self, s: str):
         return self.getDigit(s)*30*24*60*59
     
     def day2sec(self, s: str):
