@@ -47,19 +47,20 @@ answers = {}
 chat_id_list = []
 
 ###
-
+conti = []
 
 def load_json():
     with open("data.json", "r") as file:
         return json.load(file)
 
-
+"""
 def fiddler(cmdstr):
     l = cmdstr.split(' ')
     if '/' in l[0]:
         return ' '.join(l[1:])
     else:
         return cmdstr
+"""
 
 
 def start(bot, update):
@@ -86,7 +87,7 @@ def banmyself(bot, update):
             success = bot.restrict_chat_member(chatid, user_id, until_time, can_send_messages,
                                             can_send_media_messages, can_send_other_messages, can_add_web_page_previews)
             if success:
-                update.message.reply_text('Congratulation! you have been banned for ' + str(ban_sec) + ' seconds~')
+                update.message.reply_text('Congratulation! you have been banned for {} seconds~'.format(str(ban_sec)))
             else:
                 update.message.reply_text('受到电磁干扰...')
     else:

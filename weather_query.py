@@ -16,7 +16,6 @@ def weather_qy(bot, update, args):
     #        city += c
 
     city = ''.join(re.split(r'[!@#$%^&*\(\):"<>?;,./*-+=', ''.join(args)))
-
     if city.__len__() == 0:
         bot.send_message(update.message.chat_id, '您想查询什么城市呢~')
     else:
