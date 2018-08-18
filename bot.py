@@ -50,11 +50,13 @@ answers = {}
 chat_id_list = []
 
 # working path
-working_path = ''
+# working_path = ''
 
 def load_json():
-    global working_path
-    with open(os.path.join(working_path, "data.json"), "r") as file:
+    # global working_path
+    # with open(os.path.join(working_path, "data.json"), "r") as file:
+    #     return json.load(file)
+    with open('date.json', 'r') as file:
         return json.load(file)
 
 
@@ -278,8 +280,9 @@ def read_message(bot, update):
 
 def main(path):
     global data_dict, QnA_dict, links_dict, about_str, \
-        question_keys, questions, answers, main_links, friend_links, working_path
-    working_path = path
+        question_keys, questions, answers, main_links, friend_links \
+        # , working_path
+    # working_path = path
     data_dict = load_json()
 
     QnA_dict = data_dict["questions_and_answers"]
@@ -319,6 +322,6 @@ def main(path):
 
 
 if __name__ == '__main__':
-    path = os.path.dirname(os.path.abspath('__file__'))
+    path = os.path.dirname(os.path.abspath(__file__))
     os.chdir(path)
     main(path)
