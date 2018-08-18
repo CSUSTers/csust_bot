@@ -83,6 +83,7 @@ def banmyself(bot, update):
     if len(cmd_list) > 0:
         long_long_time = SecGetter.get(cmd_list)
     
+    
     chatid = update.message.chat_id
     user_id = update.message.from_user.id
     if update.message.chat.type == 'private':

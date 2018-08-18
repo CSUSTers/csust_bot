@@ -113,7 +113,7 @@ class RequestBuilder(JSONBuilder):
         return self[self.fields[fieldno]]
 
 
-class SecGetter:
+class _secGetter:
     def getDigit(self, s: str):
         if s.isdigit():
             return int(s)
@@ -161,3 +161,6 @@ class SecGetter:
             else:
                 secs += self.format2sec(l)
         return secs
+
+
+SecGetter = _secGetter()
