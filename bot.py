@@ -4,7 +4,7 @@ commands:
 say_hello - 我是一只只会嗦hello的咸鱼
 hello_to_all - Say hello to all group members
 record - 人类的本质就是复读机，Bot也是一样的
-real_record - 复读机...复读机...复读机...复读机...
+real_record - 复读机...复读机...复读机的开关
 all_links - 这里有一些链接，如果本校同学想要添加友链也可以联系哦
 all_questions - 显示所有的问题
 all_answers - 显示所有的问题和答案
@@ -15,12 +15,14 @@ ddg - <Key Words> Search DuckDuckGo...
 bing - <Key Words> Search Bing...
 search_baidu - <Key Words> 在百毒搜索...
 weather - <CityName> 查询天气
+banmyself - 把自己ban掉[36,66]秒
 
 ----------
 """
+import datetime
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler
-from telegram import error, bot
+from telegram import error, Bot, Chat, User, Message, ChatMember
 
 from config import TOKEN
 from weather_query import weather_qy
@@ -32,7 +34,6 @@ import utils
 import requests
 import sys, os
 
-
 # for new feature
 data_dict = {}
 QnA_dict = {}
@@ -43,10 +44,9 @@ main_links = []
 friend_links = []
 questions = {}
 answers = {}
-###
+chat_id_list = []
 
-# For real_record
-conti = False
+###
 
 
 def load_json():
@@ -63,21 +63,41 @@ def fiddler(cmdstr):
 
 
 def start(bot, update):
-    update.message.reply_text('This is a bot made by some csusters stadying SE,\n' 
+    update.message.reply_text('This is a bot made by some csusters stadying SE,\n'
                               ' and serve every csusters.',
                               parse_mode='Markdown')
 
 
 def banmyself(bot, update):
-    update.message.reply_text('Congratulation, you are banned.')
+    chatid = update.message.chat_id
+    user_id = update.message.from_user.id
+    if update.message.chat.type == 'private':
+        update.message.reply_text('我觉得布星~')
+    elif bot.get_chat_member(chatid, bot.id).status == 'administrator':
+        if bot.get_chat_member(chatid, user_id).status in ['administrator','creator']:
+            update.message.reply_text('神秘的力量使我无法满足你的欲望')
+        else:
+            ban_sec = random.choice(range(36, 67))
+            until_time = update.message.date + datetime.timedelta(seconds=ban_sec)
+            can_send_messages = False
+            can_send_media_messages = False
+            can_send_other_messages = False
+            can_add_web_page_previews = False
+            success = bot.restrict_chat_member(chatid, user_id, until_time, can_send_messages,
+                                            can_send_media_messages, can_send_other_messages, can_add_web_page_previews)
+            if success:
+                update.message.reply_text('Congratulation! you have been banned for ' + str(ban_sec) + ' seconds~')
+            else:
+                update.message.reply_text('受到电磁干扰...')
+    else:
+        update.message.reply_text('可惜我失去了力量...')
 
 
 def say_hello(bot, update):
     # chatId = update.message.chat_id
     replyText = "Hello.\n"
     update.message.reply_text(replyText,
-                                  parse_mode='Markdown')
-
+                              parse_mode='Markdown')
 
 
 def hello_to_all(bot, update):
@@ -92,21 +112,18 @@ def record(bot, update):
 
 
 def real_record(bot, update):
-    global conti
-    conti = True
-    replyText = fiddler(update.message.text)
-    #while conti:
+    chatid = update.message.chat_id
+    if chatid in chat_id_list:
+        bot.send_message(update.message.chat_id, '好累啊,休息休息...')
+        chat_id_list.remove(chatid)
+    else:
+        bot.send_message(update.message.chat_id, '复读机!复读机!')
+        chat_id_list.append(chatid)
+
+    # replyText = fiddler(update.message.text)
+    # while conti:
     #    bot.send_message(update.message.chat_id, replyText)
-    update.message.reply_text('这个功能目前不可控，暂不开放')
-
-
-def stop_record(bot, update):
-	global conti
-	if conti:
-		conti = False
-		bot.send_message(update.message.chat_id, '已停止')
-	else:
-		update.message.reply_text('你在嗦什么')
+    # update.message.reply_text('这个功能目前不可控，暂不开放')
 
 
 def all_links(bot, update):
@@ -169,7 +186,7 @@ def question(bot, update):
 def search(bot, update, search_name):
     if update.message.chat_id < 0:
         replyText = ('[@{}](tg://user?id={})    \n'.format(update.message.from_user.first_name,
-                                                        update.message.from_user.id))
+                                                           update.message.from_user.id))
     else:
         replyText = ''
     replyText = replyText + '这是为您从 {} 找到的: \n'.format(search_name)
@@ -181,19 +198,23 @@ def encode_url_words(l):
 
 
 def google(key_words):
-    return '  ** [{}](https://www.google.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words), parse_mode='Markdown')
+    return '  ** [{}](https://www.google.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
+                                                                     parse_mode='Markdown')
 
 
 def baidu(key_words):
-    return '  ** [{}](https://www.baidu.com/s?wd={}) **'.format(' '.join(key_words), encode_url_words(key_words), parse_mode='Markdown')
+    return '  ** [{}](https://www.baidu.com/s?wd={}) **'.format(' '.join(key_words), encode_url_words(key_words),
+                                                                parse_mode='Markdown')
 
 
 def ddg(key_words):
-    return '  ** [{}](https://duckduckgo.com/?q={}) **'.format(' '.join(key_words), encode_url_words(key_words), parse_mode='Markdown')
+    return '  ** [{}](https://duckduckgo.com/?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
+                                                               parse_mode='Markdown')
 
 
 def bing(key_words):
-    return '  ** [{}](https://bing.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words), parse_mode='Markdown')
+    return '  ** [{}](https://bing.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
+                                                               parse_mode='Markdown')
 
 
 def search_google(bot, update, args):
@@ -228,22 +249,23 @@ def search_bing(bot, update, args):
     bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
 
 
-def test(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text="你好，该bot正在测试功能")
-
-
 def boot(bot, update):
-	update.message.reply_text('早上好，今天也是元气满满的一天哦！')
+    update.message.reply_text('早上好，今天也是元气满满的一天哦！')
 
 
 def sleep(bot, update):
     update.message.reply_text('晚安，明天醒来就能看到我哦！')
 
 
+def read_message(bot, update):
+    message = update.message.text
+    chatid = update.message.chat_id
+    if chatid in chat_id_list:
+        bot.send_message(chatid, message)
 
 
 def main():
-    global data_dict, QnA_dict, links_dict, about_str,\
+    global data_dict, QnA_dict, links_dict, about_str, \
         question_keys, questions, answers, main_links, friend_links
     data_dict = load_json()
 
@@ -259,14 +281,13 @@ def main():
 
     updater = Updater(token=TOKEN)
     dp = updater.dispatcher
-    dp.add_handler(MessageHandler(Filters.text, test))
+    dp.add_handler(MessageHandler(Filters.text, read_message))
     dp.add_handler(CommandHandler('banmyself', banmyself))
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('say_hello', say_hello))
     dp.add_handler(CommandHandler('hello_to_all', hello_to_all))
     dp.add_handler(CommandHandler('record', record))
     dp.add_handler(CommandHandler('real_record', real_record))
-    dp.add_handler(CommandHandler('stop_record', stop_record))
     dp.add_handler(CommandHandler('all_links', all_links))
     dp.add_handler(CommandHandler('all_questions', all_questions))
     dp.add_handler(CommandHandler('all_answers', all_answers))
@@ -287,4 +308,3 @@ if __name__ == '__main__':
     path = os.path.dirname(os.path.abspath('__file__'))
     os.chdir(path)
     main()
-
