@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 """
 commands:
 say_hello - 我是一只只会嗦hello的咸鱼
@@ -280,8 +281,7 @@ def read_message(bot, update):
 
 def main(path):
     global data_dict, QnA_dict, links_dict, about_str, \
-        question_keys, questions, answers, main_links, friend_links \
-        # , working_path
+        question_keys, questions, answers, main_links, friend_links
     # working_path = path
     data_dict = load_json()
 
