@@ -49,9 +49,13 @@ answers = {}
 # for real_record
 chat_id_list = []
 
+# working path
+path = ''
+
 
 def load_json():
-    with open("data.json", "r") as file:
+    global path
+    with open(os.path.join(path, "data.json"), "r") as file:
         return json.load(file)
 
 
@@ -315,6 +319,7 @@ def main():
 
 
 if __name__ == '__main__':
+    global PATH as path
     path = os.path.dirname(os.path.abspath('__file__'))
     os.chdir(path)
     main()
