@@ -44,10 +44,10 @@ main_links = []
 friend_links = []
 questions = {}
 answers = {}
-chat_id_list = []
 
-###
+# for real_record
 conti = []
+chat_id_list = []
 
 def load_json():
     with open("data.json", "r") as file:
