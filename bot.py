@@ -28,6 +28,7 @@ from telegram import error, Bot, Chat, User, Message, ChatMember
 
 from config import TOKEN
 from weather_query import weather_qy
+from utils import SecGetter
 
 import json
 import random
@@ -35,6 +36,7 @@ import logging
 import utils
 import requests
 import sys, os
+
 
 # for new feature
 data_dict = {}
@@ -76,6 +78,11 @@ def start(bot, update):
 
 
 def banmyself(bot, update):
+    cmd_list = update.message.text.split()[1:]
+    long_long_time = 0
+    if len(cmd_list) > 0:
+        long_long_time = SecGetter.get(cmd_list)
+    
     chatid = update.message.chat_id
     user_id = update.message.from_user.id
     if update.message.chat.type == 'private':
@@ -84,7 +91,10 @@ def banmyself(bot, update):
         if bot.get_chat_member(chatid, user_id).status in ['administrator','creator']:
             update.message.reply_text('神秘的力量使我无法满足你的欲望')
         else:
-            ban_sec = random.choice(range(36, 67))
+            if 36 < long_long_time < 262400:
+                ban_sec = long_long_time
+            else:
+                ban_sec = random.choice(range(36, 67))
             until_time = update.message.date + datetime.timedelta(seconds=ban_sec)
             can_send_messages = False
             can_send_media_messages = False

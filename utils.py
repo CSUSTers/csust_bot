@@ -111,3 +111,45 @@ class RequestBuilder(JSONBuilder):
 
     def _access_field(self, fieldno:int) -> JSONBuilder:
         return self[self.fields[fieldno]]
+
+
+class SecGetter:
+    def getDigit(self, s: str):
+        if s.isdigit():
+            return int(s)
+        else:
+            return 0
+
+    def mouth2sec(self, s: str):
+        return getDigit(s)*30*24*60*59
+    
+    def day2sec(self, s: str):
+        return getDigit(s)*24*60*59
+    
+    def hour2sec(self, s: str):
+        return getDigit(s)*60*59
+    
+    def format2sec(self, s:str):
+        secs = 0
+        l = s.split(':')
+        if len(l) in [2, 3]:
+            return 0
+        for _1s in l:
+            secs *= 60
+            secs += getDigit(_1s)
+        return secs
+    
+    def get(list):
+        secs = 0
+        for l: str in list:
+            if l[-1] in ['M', 'm']:
+                secs += month2sec(l[:-1])
+            elif l[-1] in ['D', 'd']:
+                secs += day2sec(l[:-1])
+            elif l[-1] in ['H', 'h']:
+                secs += hour2sec(l[:-1])
+            elif l.isdigit():
+                secs += int(l)
+            else:
+                secs += format2sec(l)
+        return secs
