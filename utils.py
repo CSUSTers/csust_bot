@@ -121,13 +121,16 @@ class SecGetter:
             return 0
 
     def mouth2sec(self, s: str):
-        return getDigit(s)*30*24*60*59
+        return self.getDigit(s)*30*24*60*59
     
     def day2sec(self, s: str):
-        return getDigit(s)*24*60*59
+        return self.getDigit(s)*24*60*59
     
     def hour2sec(self, s: str):
-        return getDigit(s)*60*59
+        return self.getDigit(s)*60*59
+
+    def getOneSec(self, s:str):
+        return self.getDigit(s)
     
     def format2sec(self, s:str):
         secs = 0
@@ -136,20 +139,25 @@ class SecGetter:
             return 0
         for _1s in l:
             secs *= 60
-            secs += getDigit(_1s)
+            secs += self.getDigit(_1s)
         return secs
     
-    def get(list):
+    def get(self, list):
         secs = 0
-        for l: str in list:
+        for l in list:
             if l[-1] in ['M', 'm']:
-                secs += month2sec(l[:-1])
+                secs += self.month2sec(l[:-1])
             elif l[-1] in ['D', 'd']:
-                secs += day2sec(l[:-1])
+                secs += self.day2sec(l[:-1])
             elif l[-1] in ['H', 'h']:
-                secs += hour2sec(l[:-1])
+                secs += self.hour2sec(l[:-1])
+            elif l[-1] in ['S', 's']:
+                if l[0] == '-':
+                    secs -= self.getOneSec(l[1:-1])
+                else:
+                    secs += self.getOneSec(l[:-1])
             elif l.isdigit():
                 secs += int(l)
             else:
-                secs += format2sec(l)
+                secs += self.format2sec(l)
         return secs
