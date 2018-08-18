@@ -57,7 +57,7 @@ def load_json():
     # global working_path
     # with open(os.path.join(working_path, "data.json"), "r") as file:
     #     return json.load(file)
-    with open('date.json', 'r') as file:
+    with open('data.json', 'r') as file:
         return json.load(file)
 
 
