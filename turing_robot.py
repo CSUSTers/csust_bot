@@ -7,6 +7,8 @@ from operator import getitem
 from utils import RequestBuilder
 from json import dumps
 from copy import deepcopy
+
+from config import TuringBotConfig
 import re
 
 errlog = partial(print, file=stderr, flush=True)
@@ -15,39 +17,36 @@ errlog = partial(print, file=stderr, flush=True)
 机器人类。
 你可以与他进行交互。
 """
+
+
 class turing_robot:
     # static attributes.
-    photo_utl_re = re.compile(r'^(https?|ftp)://.*\.(jpg|png|jpeg|ico|gif|svg|webp)$')
+    photo_utl_re = re.compile(
+        r'^(https?|ftp)://.*\.(jpg|png|jpeg|ico|gif|svg|webp)$')
 
-
-    def __init__(self, userid = None, config_file = 'robotconf.ini'):
-        c = ConfigParser()
+    def __init__(self, userid=None):
         self.userid = userid or "DoesMadeInAbyssTodayUpdated"
         self.errno = 0
         try:
-            c.read_file(open(config_file))
-            self.interface_address = c['API']['interface_address']
-            self.apikey = c['API']['apikey']
-        except IOError as e:
-            errlog("IOError: {}, 可能是配置文件不存在。".format(e))
+            self.interface_address = TuringBotConfig.api_address
+            self.apikey = TuringBotConfig.apikey
+        except AttributeError as e:
+            errlog("AttributeError: {}，可能是配置文件中相应的类有一些问题。".format(e))
             self.errno &= 0x01
-        except KeyError as e:
-            errlog("KeyError: {}，可能是配置文件有误。".format(e))
-            self.errno &= 0x02
 
         self.request_json_prototype = RequestBuilder().add_userinfo(self.apikey, self.userid)
         self.request_json = deepcopy(self.request_json_prototype)
 
     def make_request(self) -> requests.models.Response:
-        r = requests.post(self.interface_address, data=dumps(self.request_json.build()).encode('utf-8'))
+        r = requests.post(self.interface_address, data=dumps(
+            self.request_json.build()).encode('utf-8'))
         self.request_json = deepcopy(self.request_json_prototype)
-        sc =  r.status_code
+        sc = r.status_code
         if sc == 200:
             return r
         else:
             r.close()
             raise requests.HTTPError(f"HTTP ERROR: {sc}")
-            
 
     def make_responce(self):
         """
@@ -73,16 +72,19 @@ class turing_robot:
         except requests.HTTPError as he:
             errlog(f"err: {he}")
             return f"请求失败：{he}"
-    
+
+
 class robot_response:
     def __init__(self, results):
         self.grouped_data = []
         self.data = None
         for r in results:
             if r['groupType'] == 0:
-                self.data = (r['resultType'], str.join('\n', r['values'].values()))
+                self.data = (r['resultType'], str.join(
+                    '\n', r['values'].values()))
             else:
-                self.grouped_data.append((r['resultType'], str.join('\n', r['values'].values())))
+                self.grouped_data.append(
+                    (r['resultType'], str.join('\n', r['values'].values())))
 
     def get_response_content(self) -> str:
         if self.data is not None:
@@ -90,10 +92,9 @@ class robot_response:
         else:
             # 我在这里默认了 groupType 只有 0 或者 1 两种状况。
             return str.join('\n\n', map(lambda o: getitem(o, 1), self.grouped_data))
-    
+
     def get_response(self):
         if self.data is not None:
             return self.data
         else:
             return self.grouped_data
-

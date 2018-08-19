@@ -111,3 +111,56 @@ class RequestBuilder(JSONBuilder):
 
     def _access_field(self, fieldno:int) -> JSONBuilder:
         return self[self.fields[fieldno]]
+
+
+class _secGetter:
+    def getDigit(self, s: str):
+        if s.isdigit():
+            return int(s)
+        else:
+            return 0
+
+    def month2sec(self, s: str):
+        return self.getDigit(s)*30*24*60*59
+    
+    def day2sec(self, s: str):
+        return self.getDigit(s)*24*60*59
+    
+    def hour2sec(self, s: str):
+        return self.getDigit(s)*60*59
+
+    def getOneSec(self, s:str):
+        return self.getDigit(s)
+    
+    def format2sec(self, s:str):
+        secs = 0
+        l = s.split(':')
+        if not len(l) in [2, 3]:
+            return 0
+        for _1s in l:
+            secs *= 60
+            secs += self.getDigit(_1s)
+        return secs
+    
+    def get(self, list):
+        secs = 0
+        for l in list:
+            if l[-1] in ['M', 'm']:
+                secs += self.month2sec(l[:-1])
+            elif l[-1] in ['D', 'd']:
+                secs += self.day2sec(l[:-1])
+            elif l[-1] in ['H', 'h']:
+                secs += self.hour2sec(l[:-1])
+            elif l[-1] in ['S', 's']:
+                if l[0] == '-':
+                    secs -= self.getOneSec(l[1:-1])
+                else:
+                    secs += self.getOneSec(l[:-1])
+            elif l.isdigit():
+                secs += int(l)
+            else:
+                secs += self.format2sec(l)
+        return secs
+
+
+SecGetter = _secGetter()

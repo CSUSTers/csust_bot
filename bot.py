@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 """
 commands:
 say_hello - 我是一只只会嗦hello的咸鱼
@@ -16,6 +17,7 @@ bing - <Key Words> Search Bing...
 search_baidu - <Key Words> 在百毒搜索...
 weather - <CityName> 查询天气
 banmyself - 把自己ban掉[36,66]秒
+fake_banmyself - 虚假的ban自己
 
 ----------
 """
@@ -26,6 +28,7 @@ from telegram import error, Bot, Chat, User, Message, ChatMember
 
 from config import TOKEN
 from weather_query import weather_qy
+from utils import SecGetter
 
 import json
 import random
@@ -33,6 +36,7 @@ import logging
 import utils
 import requests
 import sys, os
+
 
 # for new feature
 data_dict = {}
@@ -44,20 +48,25 @@ main_links = []
 friend_links = []
 questions = {}
 answers = {}
+
+# for real_record
 chat_id_list = []
 
-###
-
+# working path
+# working_path = ''
 
 def load_json():
-    with open("data.json", "r") as file:
+    # global working_path
+    # with open(os.path.join(working_path, "data.json"), "r") as file:
+    #     return json.load(file)
+    with open('data.json', 'r') as file:
         return json.load(file)
 
 
 def fiddler(cmdstr):
-    l = cmdstr.split(' ')
-    if '/' in l[0]:
-        return ' '.join(l[1:])
+    l = cmdstr.split(' ', 1)
+    if l[0].startswith('/'):
+        return l[1]
     else:
         return cmdstr
 
@@ -69,6 +78,12 @@ def start(bot, update):
 
 
 def banmyself(bot, update):
+    cmd_list = update.message.text.split()[1:]
+    long_long_time = 0
+    if len(cmd_list) > 0:
+        long_long_time = SecGetter.get(cmd_list)
+    
+    
     chatid = update.message.chat_id
     user_id = update.message.from_user.id
     if update.message.chat.type == 'private':
@@ -77,7 +92,10 @@ def banmyself(bot, update):
         if bot.get_chat_member(chatid, user_id).status in ['administrator','creator']:
             update.message.reply_text('神秘的力量使我无法满足你的欲望')
         else:
-            ban_sec = random.choice(range(36, 67))
+            if 36 < long_long_time < 262400:
+                ban_sec = long_long_time
+            else:
+                ban_sec = random.choice(range(36, 67))
             until_time = update.message.date + datetime.timedelta(seconds=ban_sec)
             can_send_messages = False
             can_send_media_messages = False
@@ -86,11 +104,19 @@ def banmyself(bot, update):
             success = bot.restrict_chat_member(chatid, user_id, until_time, can_send_messages,
                                             can_send_media_messages, can_send_other_messages, can_add_web_page_previews)
             if success:
-                update.message.reply_text('Congratulation! you have been banned for ' + str(ban_sec) + ' seconds~')
+                update.message.reply_text('Congratulation! you have been banned for {} seconds~'.format(str(ban_sec)))
             else:
                 update.message.reply_text('受到电磁干扰...')
     else:
         update.message.reply_text('可惜我失去了力量...')
+
+
+def fake_banmyself(bot, update):
+    chatID = update.message.chat_id
+    if chatID > 0:
+        update.message.reply_text("你在嗦什么，我怎么听不懂。")
+    else:
+        update.message.reply_text("Congratulation! Now, you are banned.")
 
 
 def say_hello(bot, update):
@@ -264,9 +290,10 @@ def read_message(bot, update):
         bot.send_message(chatid, message)
 
 
-def main():
+def main(path):
     global data_dict, QnA_dict, links_dict, about_str, \
         question_keys, questions, answers, main_links, friend_links
+    # working_path = path
     data_dict = load_json()
 
     QnA_dict = data_dict["questions_and_answers"]
@@ -283,6 +310,7 @@ def main():
     dp = updater.dispatcher
     dp.add_handler(MessageHandler(Filters.text, read_message))
     dp.add_handler(CommandHandler('banmyself', banmyself))
+    dp.add_handler(CommandHandler('fake_banmyself', fake_banmyself))
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('say_hello', say_hello))
     dp.add_handler(CommandHandler('hello_to_all', hello_to_all))
@@ -305,6 +333,6 @@ def main():
 
 
 if __name__ == '__main__':
-    path = os.path.dirname(os.path.abspath('__file__'))
+    path = os.path.dirname(os.path.abspath(__file__))
     os.chdir(path)
-    main()
+    main(path)
