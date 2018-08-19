@@ -16,14 +16,12 @@ def errlog(info):
     print(info, file=stderr, flush=True)
 
 
-"""
-机器人类。
-你可以与他进行交互。
-"""
-
-
 class turing_robot:
-    # static attributes.
+    """
+    机器人类。
+    你可以与他进行交互。
+    """
+# static attributes.
     photo_utl_re = re.compile(
         r'^(https?|ftp)://.*\.(jpg|png|jpeg|ico|gif|svg|webp)$')
 
