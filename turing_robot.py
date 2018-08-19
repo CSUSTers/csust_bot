@@ -11,7 +11,10 @@ from copy import deepcopy
 from config import TuringBotConfig
 import re
 
-errlog = partial(print, file=stderr, flush=True)
+
+def errlog(info):
+    print(info, file=stderr, flush=True)
+
 
 """
 机器人类。
