@@ -37,7 +37,7 @@ class turing_robot:
         self.request_json_prototype = RequestBuilder().add_userinfo(self.apikey, self.userid)
         self.request_json = deepcopy(self.request_json_prototype)
 
-    def make_request(self) -> requests.models.Response:
+    def make_request(self):
         r = requests.post(self.interface_address, data=dumps(
             self.request_json.build()).encode('utf-8'))
         self.request_json = deepcopy(self.request_json_prototype)

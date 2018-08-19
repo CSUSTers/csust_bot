@@ -18,17 +18,19 @@ search_baidu - <Key Words> 在百毒搜索...
 weather - <CityName> 查询天气
 banmyself - 把自己ban掉[36,66]秒
 fake_banmyself - 虚假的ban自己
+chat - [message] 与机器人聊天，有参数时将回复参数，无参数时做为自动聊天的开关
 
 ----------
 """
 import datetime
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler
-from telegram import error, Bot, Chat, User, Message, ChatMember
+from telegram import error, Bot, Chat, User, Message, ChatMember, Sticker
 
 from config import TOKEN
 from weather_query import weather_qy
 from utils import SecGetter
+from turing_robot import turing_robot
 
 import json
 import random
@@ -51,6 +53,10 @@ answers = {}
 
 # for real_record
 chat_id_list = []
+
+# for turing_chat
+turing = turing_robot()
+turing_chat_list = []
 
 # working path
 # working_path = ''
@@ -283,11 +289,29 @@ def sleep(bot, update):
     update.message.reply_text('晚安，明天醒来就能看到我哦！')
 
 
+def chat(bot, update, args):
+    message = ''.join(args)
+    if message.__len__ != 0:
+        update.reply_text(turing.interact(message))
+    else:
+        chatid = update.message.chat_id
+        if chatid in turing_chat_list:
+            update.message.reply_text('累了~不聊啦~')
+            chat_id_list.remove(chatid)
+        else:
+            update.message.reply_text('陪你聊聊呗~')
+            chat_id_list.append(chatid)
+
+
 def read_message(bot, update):
     message = update.message.text
+    sticker = update.message.sticker
     chatid = update.message.chat_id
     if chatid in chat_id_list:
         bot.send_message(chatid, message)
+        bot.send_sticker(chatid, sticker)
+    elif chatid in turing_chat_list:
+        update.reply_text(turing.interact(message))
 
 
 def main(path):
@@ -328,6 +352,7 @@ def main(path):
     dp.add_handler(CommandHandler('boot', boot))
     dp.add_handler(CommandHandler('poweroff', sleep))
     dp.add_handler(CommandHandler('shutdown', sleep))
+    dp.add_handler(CommandHandler('chat', chat))
     dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
     updater.start_polling()
 
