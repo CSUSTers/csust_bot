@@ -288,20 +288,18 @@ def boot(bot, update):
 def sleep(bot, update):
     update.message.reply_text('晚安，明天醒来就能看到我哦！')
 
-
 def chat(bot, update, args):
     message = ''.join(args)
-    if message.__len__ != 0:
-        update.reply_text(turing.interact(message))
+    if message.__len__() != 0:
+        update.message.reply_text(turing.interact(message))
     else:
         chatid = update.message.chat_id
         if chatid in turing_chat_list:
             update.message.reply_text('累了~不聊啦~')
-            chat_id_list.remove(chatid)
+            turing_chat_list.remove(chatid)
         else:
             update.message.reply_text('陪你聊聊呗~')
-            chat_id_list.append(chatid)
-
+            turing_chat_list.append(chatid)
 
 def read_message(bot, update):
     message = update.message.text
@@ -311,7 +309,7 @@ def read_message(bot, update):
         bot.send_message(chatid, message)
         bot.send_sticker(chatid, sticker)
     elif chatid in turing_chat_list:
-        update.reply_text(turing.interact(message))
+        update.message.reply_text(turing.interact(message))
 
 
 def main(path):
@@ -352,7 +350,7 @@ def main(path):
     dp.add_handler(CommandHandler('boot', boot))
     dp.add_handler(CommandHandler('poweroff', sleep))
     dp.add_handler(CommandHandler('shutdown', sleep))
-    dp.add_handler(CommandHandler('chat', chat))
+    dp.add_handler(CommandHandler('chat', chat, pass_args=True))
     dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
     updater.start_polling()
 
