@@ -83,20 +83,19 @@ def start(bot, update):
                               parse_mode='Markdown')
 
 
-def banmyself(bot, update):
+def ban_user(bot, update, user):
+    user_id = user.id
+    message = update.message.reply_to_message
     cmd_list = update.message.text.split()[1:]
     long_long_time = 0
     if len(cmd_list) > 0:
         long_long_time = SecGetter.get(cmd_list)
-    
-    
     chatid = update.message.chat_id
-    user_id = update.message.from_user.id
     if update.message.chat.type == 'private':
         update.message.reply_text('我觉得布星~')
     elif bot.get_chat_member(chatid, bot.id).status == 'administrator':
         if bot.get_chat_member(chatid, user_id).status in ['administrator','creator']:
-            update.message.reply_text('神秘的力量使我无法满足你的欲望')
+            message.reply_text('神秘的力量使我无法满足你的欲望')
         else:
             if 36 < long_long_time < 262400:
                 ban_sec = long_long_time
@@ -110,11 +109,34 @@ def banmyself(bot, update):
             success = bot.restrict_chat_member(chatid, user_id, until_time, can_send_messages,
                                             can_send_media_messages, can_send_other_messages, can_add_web_page_previews)
             if success:
-                update.message.reply_text('Congratulation! you have been banned for {} seconds~'.format(str(ban_sec)))
+                message.reply_text('Congratulation! you have been banned for {} seconds~'.format(str(ban_sec)))
             else:
                 update.message.reply_text('受到电磁干扰...')
     else:
         update.message.reply_text('可惜我失去了力量...')
+
+
+def banmyself(bot, update):
+    ban_user(bot, update, update.message.from_user)
+
+
+
+def ban(bot, update):
+    message = update.message.reply_to_message
+    if message is None:
+        update.message.reply_text('你想ban掉谁呢...')
+    else:
+        user_id = message.from_user.id
+        user = message.from_user
+        if user_id == bot.id:
+            update.message.reply_text('你想什么呢...')
+        elif bot.get_chat_member(update.message.chat_id, update.message.from_user.id).can_restrict_members:
+            ban_user(bot, update, user)
+        else:
+            update.message.reply_text('可惜你的力量还不够强大...')
+        
+
+
 
 
 def fake_banmyself(bot, update):
@@ -334,6 +356,7 @@ def main(path):
     dp.add_handler(MessageHandler(Filters.text, read_message))
     dp.add_handler(MessageHandler(Filters.sticker, read_message))
     dp.add_handler(CommandHandler('banmyself', banmyself))
+    dp.add_handler(CommandHandler('ban', ban))
     dp.add_handler(CommandHandler('fake_banmyself', fake_banmyself))
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('say_hello', say_hello))
