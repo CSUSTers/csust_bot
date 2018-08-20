@@ -306,7 +306,8 @@ def read_message(bot, update):
     sticker = update.message.sticker
     chatid = update.message.chat_id
     if chatid in chat_id_list:
-        bot.send_message(chatid, message)
+        if(message is not None):
+             bot.send_message(chatid, message)
         bot.send_sticker(chatid, sticker)
     elif chatid in turing_chat_list:
         update.message.reply_text(turing.interact(message))
@@ -331,6 +332,7 @@ def main(path):
     updater = Updater(token=TOKEN)
     dp = updater.dispatcher
     dp.add_handler(MessageHandler(Filters.text, read_message))
+    dp.add_handler(MessageHandler(Filters.sticker, read_message))
     dp.add_handler(CommandHandler('banmyself', banmyself))
     dp.add_handler(CommandHandler('fake_banmyself', fake_banmyself))
     dp.add_handler(CommandHandler('start', start))
