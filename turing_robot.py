@@ -77,8 +77,8 @@ class turing_robot:
                 self.request_json.add_text(quesion)
                 return self.make_responce().get_response_content()
         except requests.HTTPError as he:
-            errlog(f"err: {he}")
-            return f"请求失败：{he}"
+            errlog("err: {}".format(he))
+            return "请求失败：{}".format(he)
 
 
 class robot_response:
