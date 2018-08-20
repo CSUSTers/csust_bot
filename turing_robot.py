@@ -53,7 +53,7 @@ class turing_robot:
             return r
         else:
             r.close()
-            raise requests.HTTPError(f"HTTP ERROR: {sc}")
+            raise requests.HTTPError("HTTP ERROR: {}".format(sc))
 
     def make_responce(self):
         """
