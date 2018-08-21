@@ -198,13 +198,15 @@ def search(bot, update, search_name):
     return replyText
 
 
-def encode_url_words(l):
-    return url_encode(' '.join(l))
+def encode_url_words(s):
+    # return url_encode(' '.join(l))
+    return url_encode(s)
 
 
 def get_search_url(name, keyswords_list):
+    key_words = ' '.join(keyswords_list)
     base = '  ** [{words}](' + search_dict[name] + ') **'
-    return base.format(words=' '.join(keyswords_list), q=encode_url_words(keyswords_list))
+    return base.format(words=keyswords, q=encode_url_words(keyswords))
 
 
 """
