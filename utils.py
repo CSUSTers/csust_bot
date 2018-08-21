@@ -183,8 +183,8 @@ SecGetter = _secGetter()
 search_dict = {
     'google': 'https://www.google.com/search?q={q}',
     'bing': 'https://bing.com/search?q={q}',
-    'ddg': 'https://duckduckgo.com/?q={}',
-    'bd': 'https://www.baidu.com/s?wd={}'
+    'ddg': 'https://duckduckgo.com/?q={q}',
+    'bd': 'https://www.baidu.com/s?wd={q}'
 }
 
 
