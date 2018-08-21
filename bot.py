@@ -124,12 +124,10 @@ def ban(bot, update):
         user_id = message.from_user.id
         user = message.from_user
         chat_member = bot.get_chat_member(update.message.chat_id, update.message.from_user.id)
-        if user_id == bot.id:
-            update.message.reply_text('你想什么呢...')
-        elif chat_member.can_restrict_members or chat_member.status == 'creator' :
+        if chat_member.can_restrict_members or chat_member.status == 'creator' :
             ban_user(bot, update, user)
         else:
-            update.message.reply_text('可惜你的力量还不够强大...')
+            banmyself(bot, update)
 
 
 def fake_banmyself(bot, update):
