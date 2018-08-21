@@ -179,19 +179,35 @@ class _secGetter:
 
 SecGetter = _secGetter()
 
+
+search_dict = {
+    'google': 'https://www.google.com/search?q={q}',
+    'bing': 'https://bing.com/search?q={q}',
+    'ddg': 'https://duckduckgo.com/?q={}',
+    'bd': 'https://www.baidu.com/s?wd={}'
+}
+
+
 def search(bot, update, search_name):
     if update.message.chat_id < 0:
         replyText = ('[@{}](tg://user?id={})    \n'.format(update.message.from_user.first_name,
-                                                            update.message.from_user.id))
+                                                           update.message.from_user.id))
     else:
         replyText = ''
     replyText = replyText + '这是为您从 {} 找到的: \n'.format(search_name)
     return replyText
 
+
 def encode_url_words(l):
     return url_encode(' '.join(l))
 
 
+def get_search_url(name, keyswords_list):
+    base = '  ** [{words}](' + search_dict[name] + ')**'
+    return base.format(words=' '.join(keyswords_list), q=encode_url_words(keyswords))
+
+
+"""
 def google(key_words):
     return '  ** [{}](https://www.google.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
                                                                     parse_mode='Markdown')
@@ -207,35 +223,40 @@ def ddg(key_words):
 def bing(key_words):
     return '  ** [{}](https://bing.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
                                                             parse_mode='Markdown')
+"""
+
 
 def search_google(bot, update, args):
     if args.__len__() != 0:
-        replyText = search(bot, update, 'Google') + google(args)
+        replyText = search(bot, update, 'Google') + get_search_url('google', args)
     else:
         replyText = '请输入关键字. '
     bot.send_message(update.message.chat_id,
-                        replyText, parse_mode='Markdown')
+                     replyText, parse_mode='Markdown')
+
 
 def search_baidu(bot, update, args):
     if args.__len__() != 0:
-        replyText = search(bot, update, '百毒') + baidu(args)
+        replyText = search(bot, update, '百毒') + get_search_url('bd', args)
     else:
         replyText = '请输入关键字. '
     bot.send_message(update.message.chat_id,
-                        replyText, parse_mode='Markdown')
+                     replyText, parse_mode='Markdown')
+
 
 def search_ddg(bot, update, args):
     if args.__len__() != 0:
-        replyText = search(bot, update, 'DuckDuckGo') + ddg(args)
+        replyText = search(bot, update, 'DuckDuckGo') + get_search_url('ddg', args)
     else:
         replyText = '请输入关键字. '
     bot.send_message(update.message.chat_id,
-                        replyText, parse_mode='Markdown')
+                     replyText, parse_mode='Markdown')
+
 
 def search_bing(bot, update, args):
     if args.__len__() != 0:
-        replyText = search(bot, update, '巨硬御用的Bing') + bing(args)
+        replyText = search(bot, update, '巨硬御用的Bing') + get_search_url('bing', args)
     else:
         replyText = '请输入关键字. '
     bot.send_message(update.message.chat_id,
-                        replyText, parse_mode='Markdown')
+                     replyText, parse_mode='Markdown')
