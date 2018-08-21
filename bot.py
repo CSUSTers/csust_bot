@@ -83,7 +83,7 @@ def ban_user(bot, update, user):
     message = update.message.reply_to_message
     cmd_list = update.message.text.split()[1:]
     long_long_time = 0
-    if len(cmd_list) > 0:
+    if cmd_list:
         long_long_time = SecGetter.get(cmd_list)
     chatid = update.message.chat_id
     if update.message.chat.type == 'private':
