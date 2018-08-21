@@ -37,6 +37,7 @@ import utils
 import requests
 import sys, os
 from ban_user_tools import BanUser
+from utils import (search_google, search_bing, search_baidu, search_ddg)
 
 
 # for new feature
@@ -130,7 +131,7 @@ def ban(bot, update):
             # 被回复用户
             # user_id = message.from_user.id
             user = message.from_user
-            
+
             ban_user(bot, update, user)
         else:
             update.message.reply_text('你想ban掉谁呢...')
@@ -232,72 +233,6 @@ def question(bot, update):
     replyText = '第{}个问题: \nQ: {}\nA: {}'.format(num,
                                                 questions[num], answers[num])
     update.message.reply_text(replyText)
-
-
-def search(bot, update, search_name):
-    if update.message.chat_id < 0:
-        replyText = ('[@{}](tg://user?id={})    \n'.format(update.message.from_user.first_name,
-                                                           update.message.from_user.id))
-    else:
-        replyText = ''
-    replyText = replyText + '这是为您从 {} 找到的: \n'.format(search_name)
-    return replyText
-
-
-def encode_url_words(l):
-    return utils.url_encode(' '.join(l))
-
-
-def google(key_words):
-    return '  ** [{}](https://www.google.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
-                                                                     parse_mode='Markdown')
-
-
-def baidu(key_words):
-    return '  ** [{}](https://www.baidu.com/s?wd={}) **'.format(' '.join(key_words), encode_url_words(key_words),
-                                                                parse_mode='Markdown')
-
-
-def ddg(key_words):
-    return '  ** [{}](https://duckduckgo.com/?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
-                                                               parse_mode='Markdown')
-
-
-def bing(key_words):
-    return '  ** [{}](https://bing.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
-                                                               parse_mode='Markdown')
-
-
-def search_google(bot, update, args):
-    if args.__len__() != 0:
-        replyText = search(bot, update, 'Google') + google(args)
-    else:
-        replyText = '请输入关键字. '
-    bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
-
-
-def search_baidu(bot, update, args):
-    if args.__len__() != 0:
-        replyText = search(bot, update, '百毒') + baidu(args)
-    else:
-        replyText = '请输入关键字. '
-    bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
-
-
-def search_ddg(bot, update, args):
-    if args.__len__() != 0:
-        replyText = search(bot, update, 'DuckDuckGo') + ddg(args)
-    else:
-        replyText = '请输入关键字. '
-    bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
-
-
-def search_bing(bot, update, args):
-    if args.__len__() != 0:
-        replyText = search(bot, update, '巨硬御用的Bing') + bing(args)
-    else:
-        replyText = '请输入关键字. '
-    bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
 
 
 def boot(bot, update):
