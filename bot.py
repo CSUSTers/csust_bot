@@ -76,11 +76,43 @@ def start(bot, update):
                               ' and serve every csusters.',
                               parse_mode='Markdown')
 
+def ban_user(bot, update, user):
+    user_id = user.id
+    message = update.message.reply_to_message
+    cmd_list = update.message.text.split()[1:]
+    long_long_time = 0
+    if cmd_list:
+        long_long_time = SecGetter.get(cmd_list)
+    chatid = update.message.chat_id
+    if update.message.chat.type == 'private':
+        update.message.reply_text('我觉得布星~')
+    elif bot.get_chat_member(chatid, bot.id).status == 'administrator':
+        if bot.get_chat_member(chatid, user_id).status in ['administrator','creator']:
+            update.message.reply_text('神秘的力量使我无法满足你的欲望')
+        else:
+            if 36 < long_long_time < 26240000:
+                ban_sec = long_long_time
+            else:
+                ban_sec = random.choice(range(36, 67))
+            until_time = update.message.date + datetime.timedelta(seconds=ban_sec)
+            can_send_messages = False
+            can_send_media_messages = False
+            can_send_other_messages = False
+            can_add_web_page_previews = False
+            success = bot.restrict_chat_member(chatid, user_id, until_time, can_send_messages,
+                                            can_send_media_messages, can_send_other_messages, can_add_web_page_previews)
+            if success:
+                message.reply_text('Congratulation! you have been banned for {} seconds~'.format(str(ban_sec)))
+            else:
+                update.message.reply_text('受到电磁干扰...')
+    else:
+        update.message.reply_text('可惜我失去了力量...')
+
 
 def banmyself(bot, update):
     cmd_list = update.message.text.split()[1:]
     long_long_time = 0
-    if len(cmd_list) > 0:
+    if cmd_list:
         long_long_time = SecGetter.get(cmd_list)
     
     
