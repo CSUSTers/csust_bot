@@ -117,17 +117,23 @@ def banmyself(bot, update):
 
 
 def ban(bot, update):
-    message = update.message.reply_to_message
-    if message is None:
-        update.message.reply_text('你想ban掉谁呢...')
+    if update.message.chat_id > 0:
+        update.message.reply_text('你在嗦什么，我怎么听不懂。')
+        return
+    
+    chat_member = bot.get_chat_member(update.message.chat_id, update.message.from_user.id)
+    if not chat_member.can_restrict_members or chat_member.status == 'creator':
+        banmyself(bot, update)
     else:
-        user_id = message.from_user.id
-        user = message.from_user
-        chat_member = bot.get_chat_member(update.message.chat_id, update.message.from_user.id)
-        if chat_member.can_restrict_members or chat_member.status == 'creator' :
+        message = update.message.reply_to_message
+        if not message is None:
+            # 被回复用户
+            # user_id = message.from_user.id
+            user = message.from_user
+            
             ban_user(bot, update, user)
         else:
-            banmyself(bot, update)
+            update.message.reply_text('你想ban掉谁呢...')
 
 
 def fake_banmyself(bot, update):
