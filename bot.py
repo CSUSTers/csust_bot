@@ -97,7 +97,7 @@ def ban_user(bot, update, user):
         if bot.get_chat_member(chatid, user_id).status in ['administrator','creator']:
             update.message.reply_text('神秘的力量使我无法满足你的欲望')
         else:
-            if 36 < long_long_time < 262400:
+            if 36 < long_long_time < 26240000:
                 ban_sec = long_long_time
             else:
                 ban_sec = random.choice(range(36, 67))

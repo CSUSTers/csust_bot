@@ -11,16 +11,17 @@ from copy import deepcopy
 from config import TuringBotConfig
 import re
 
-errlog = partial(print, file=stderr, flush=True)
 
-"""
-机器人类。
-你可以与他进行交互。
-"""
+def errlog(info):
+    print(info, file=stderr, flush=True)
 
 
 class turing_robot:
-    # static attributes.
+    """
+    机器人类。
+    你可以与他进行交互。
+    """
+# static attributes.
     photo_utl_re = re.compile(
         r'^(https?|ftp)://.*\.(jpg|png|jpeg|ico|gif|svg|webp)$')
 
@@ -37,7 +38,13 @@ class turing_robot:
         self.request_json_prototype = RequestBuilder().add_userinfo(self.apikey, self.userid)
         self.request_json = deepcopy(self.request_json_prototype)
 
-    def make_request(self):
+    def __del__(self):
+        try:
+            self.r.close()
+        except AttributeError:
+            pass
+
+    def make_request(self) -> requests.models.Response:
         r = requests.post(self.interface_address, data=dumps(
             self.request_json.build()).encode('utf-8'))
         self.request_json = deepcopy(self.request_json_prototype)
@@ -52,8 +59,8 @@ class turing_robot:
         """
         更加简洁的接口：给予输入，直接获取它的输出（封装于 robot_response 类中）
         """
-        r = self.make_request()
-        retjson = r.json()
+        self.r = self.make_request()
+        retjson = self.r.json()
         results = retjson['results']
         return robot_response(results)
 
@@ -98,3 +105,17 @@ class robot_response:
             return self.data
         else:
             return self.grouped_data
+
+
+if __name__ == "__main__":
+    t = turing_robot()
+    while True:
+        try:
+            ln = input("> ")
+            print(t.interact(ln))
+        except EOFError:
+            print("Bye.")
+            break
+        except KeyboardInterrupt:
+            print("Break.")
+            break
