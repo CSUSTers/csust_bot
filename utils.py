@@ -203,7 +203,7 @@ def encode_url_words(l):
 
 
 def get_search_url(name, keyswords_list):
-    base = '  ** [{words}](' + search_dict[name] + ')**'
+    base = '  ** [{words}](' + search_dict[name] + ') **'
     return base.format(words=' '.join(keyswords_list), q=encode_url_words(keyswords_list))
 
 
