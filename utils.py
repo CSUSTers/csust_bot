@@ -227,7 +227,7 @@ def bing(key_words):
 
 
 def search_google(bot, update, args):
-    if args.__len__() != 0:
+    if args:
         replyText = search(bot, update, 'Google') + get_search_url('google', args)
     else:
         replyText = '请输入关键字. '
@@ -236,7 +236,7 @@ def search_google(bot, update, args):
 
 
 def search_baidu(bot, update, args):
-    if args.__len__() != 0:
+    if args:
         replyText = search(bot, update, '百毒') + get_search_url('bd', args)
     else:
         replyText = '请输入关键字. '
@@ -245,7 +245,7 @@ def search_baidu(bot, update, args):
 
 
 def search_ddg(bot, update, args):
-    if args.__len__() != 0:
+    if args:
         replyText = search(bot, update, 'DuckDuckGo') + get_search_url('ddg', args)
     else:
         replyText = '请输入关键字. '
@@ -254,7 +254,7 @@ def search_ddg(bot, update, args):
 
 
 def search_bing(bot, update, args):
-    if args.__len__() != 0:
+    if args:
         replyText = search(bot, update, '巨硬御用的Bing') + get_search_url('bing', args)
     else:
         replyText = '请输入关键字. '
