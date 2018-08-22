@@ -17,6 +17,7 @@ bing - <Key Words> Search Bing...
 search_baidu - <Key Words> 在百毒搜索...
 weather - <CityName> 查询天气
 banmyself - 把自己ban掉[36,66]秒
+ban - 我就是要滥权！
 fake_banmyself - 虚假的ban自己
 
 ----------
