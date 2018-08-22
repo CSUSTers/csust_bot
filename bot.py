@@ -244,11 +244,27 @@ def sleep(bot, update):
     update.message.reply_text('晚安，明天醒来就能看到我哦！')
 
 
+"""
 def read_message(bot, update):
     message = update.message.text
     chatid = update.message.chat_id
     if chatid in chat_id_list:
         bot.send_message(chatid, message)
+"""
+
+
+def read_message(bot, update):
+    message = update.message.text
+    sticker = update.message.sticker
+    chatid = update.message.chat_id
+    if chatid in chat_id_list:
+        if(message is not None):
+             bot.send_message(chatid, message)
+        bot.send_sticker(chatid, sticker)
+    elif chatid in turing_chat_list:
+        update.message.reply_text(turing.interact(message))
+
+
 
 
 def main(path):
