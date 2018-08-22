@@ -270,6 +270,7 @@ def main(path):
     updater = Updater(token=TOKEN)
     dp = updater.dispatcher
     dp.add_handler(MessageHandler(Filters.text, read_message))
+    dp.add_handler(MessageHandler(Filters.sticker, read_message))
     dp.add_handler(CommandHandler('banmyself', banmyself))
     dp.add_handler(CommandHandler('ban', ban))
     dp.add_handler(CommandHandler('fake_banmyself', fake_banmyself))
