@@ -17,6 +17,7 @@ bing - <Key Words> Search Bing...
 search_baidu - <Key Words> 在百毒搜索...
 weather - <CityName> 查询天气
 banmyself - 把自己ban掉[36,66]秒
+ban - 我就是要滥权！
 fake_banmyself - 虚假的ban自己
 
 ----------
@@ -36,6 +37,8 @@ import logging
 import utils
 import requests
 import sys, os
+from ban_user_tools import BanUser
+from utils import (search_google, search_bing, search_baidu, search_ddg)
 
 
 # for new feature
@@ -77,15 +80,14 @@ def start(bot, update):
                               parse_mode='Markdown')
 
 
-def banmyself(bot, update):
+def ban_user(bot, update, user):
+    user_id = user.id
+    message = update.message.reply_to_message
     cmd_list = update.message.text.split()[1:]
     long_long_time = 0
-    if len(cmd_list) > 0:
+    if cmd_list:
         long_long_time = SecGetter.get(cmd_list)
-    
-    
     chatid = update.message.chat_id
-    user_id = update.message.from_user.id
     if update.message.chat.type == 'private':
         update.message.reply_text('我觉得布星~')
     elif bot.get_chat_member(chatid, bot.id).status == 'administrator':
@@ -109,6 +111,31 @@ def banmyself(bot, update):
                 update.message.reply_text('受到电磁干扰...')
     else:
         update.message.reply_text('可惜我失去了力量...')
+
+
+def banmyself(bot, update):
+    ban_user(bot, update, update.message.from_user)
+
+
+
+def ban(bot, update):
+    if update.message.chat_id > 0:
+        update.message.reply_text('你在嗦什么，我怎么听不懂。')
+        return
+    
+    chat_member = bot.get_chat_member(update.message.chat_id, update.message.from_user.id)
+    if not chat_member.can_restrict_members or chat_member.status == 'creator':
+        banmyself(bot, update)
+    else:
+        message = update.message.reply_to_message
+        if not message is None:
+            # 被回复用户
+            # user_id = message.from_user.id
+            user = message.from_user
+
+            ban_user(bot, update, user)
+        else:
+            update.message.reply_text('你想ban掉谁呢...')
 
 
 def fake_banmyself(bot, update):
@@ -209,72 +236,6 @@ def question(bot, update):
     update.message.reply_text(replyText)
 
 
-def search(bot, update, search_name):
-    if update.message.chat_id < 0:
-        replyText = ('[@{}](tg://user?id={})    \n'.format(update.message.from_user.first_name,
-                                                           update.message.from_user.id))
-    else:
-        replyText = ''
-    replyText = replyText + '这是为您从 {} 找到的: \n'.format(search_name)
-    return replyText
-
-
-def encode_url_words(l):
-    return utils.url_encode(' '.join(l))
-
-
-def google(key_words):
-    return '  ** [{}](https://www.google.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
-                                                                     parse_mode='Markdown')
-
-
-def baidu(key_words):
-    return '  ** [{}](https://www.baidu.com/s?wd={}) **'.format(' '.join(key_words), encode_url_words(key_words),
-                                                                parse_mode='Markdown')
-
-
-def ddg(key_words):
-    return '  ** [{}](https://duckduckgo.com/?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
-                                                               parse_mode='Markdown')
-
-
-def bing(key_words):
-    return '  ** [{}](https://bing.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
-                                                               parse_mode='Markdown')
-
-
-def search_google(bot, update, args):
-    if args.__len__() != 0:
-        replyText = search(bot, update, 'Google') + google(args)
-    else:
-        replyText = '请输入关键字. '
-    bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
-
-
-def search_baidu(bot, update, args):
-    if args.__len__() != 0:
-        replyText = search(bot, update, '百毒') + baidu(args)
-    else:
-        replyText = '请输入关键字. '
-    bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
-
-
-def search_ddg(bot, update, args):
-    if args.__len__() != 0:
-        replyText = search(bot, update, 'DuckDuckGo') + ddg(args)
-    else:
-        replyText = '请输入关键字. '
-    bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
-
-
-def search_bing(bot, update, args):
-    if args.__len__() != 0:
-        replyText = search(bot, update, '巨硬御用的Bing') + bing(args)
-    else:
-        replyText = '请输入关键字. '
-    bot.send_message(update.message.chat_id, replyText, parse_mode='Markdown')
-
-
 def boot(bot, update):
     update.message.reply_text('早上好，今天也是元气满满的一天哦！')
 
@@ -283,11 +244,27 @@ def sleep(bot, update):
     update.message.reply_text('晚安，明天醒来就能看到我哦！')
 
 
+"""
 def read_message(bot, update):
     message = update.message.text
     chatid = update.message.chat_id
     if chatid in chat_id_list:
         bot.send_message(chatid, message)
+"""
+
+
+def read_message(bot, update):
+    message = update.message.text
+    sticker = update.message.sticker
+    chatid = update.message.chat_id
+    if chatid in chat_id_list:
+        if(message is not None):
+             bot.send_message(chatid, message)
+        bot.send_sticker(chatid, sticker)
+    elif chatid in turing_chat_list:
+        update.message.reply_text(turing.interact(message))
+
+
 
 
 def main(path):
@@ -309,7 +286,9 @@ def main(path):
     updater = Updater(token=TOKEN)
     dp = updater.dispatcher
     dp.add_handler(MessageHandler(Filters.text, read_message))
+    dp.add_handler(MessageHandler(Filters.sticker, read_message))
     dp.add_handler(CommandHandler('banmyself', banmyself))
+    dp.add_handler(CommandHandler('ban', ban))
     dp.add_handler(CommandHandler('fake_banmyself', fake_banmyself))
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('say_hello', say_hello))
