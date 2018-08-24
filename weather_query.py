@@ -15,8 +15,8 @@ def weather_qy(bot, update, args):
     #    if '\u4e00' <= c <= '\u9fff':
     #        city += c
 
-    city = ''.join(re.split(r'[!@#$%^&*\(\):"<>?;,./*-+=', ''.join(args)))
-    if city.__len__() == 0:
+    city = ''.join(re.split(r'[!@#$%^&*\(\):"<>?;,./*-+=]', ' '.join(args)))
+    if len(city) == 0:
         bot.send_message(update.message.chat_id, '您想查询什么城市呢~')
     else:
         url = 'http://api.map.baidu.com/telematics/v3/weather?location=%s&output=json&ak=TueGDhCvwI6fOrQnLM0qmXxY9N0OkOiQ' \
