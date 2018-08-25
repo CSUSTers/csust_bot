@@ -82,7 +82,10 @@ def start(bot, update):
 
 def ban_user(bot, update, user):
     user_id = user.id
-    message = update.message.reply_to_message
+    if update.message.reply_to_message:
+        message = update.message.reply_to_message
+    else:
+        message = update.message
     cmd_list = update.message.text.split()[1:]
     long_long_time = 0
     if cmd_list:
