@@ -129,7 +129,7 @@ class RequestBuilder(JSONBuilder):
 
 class _secGetter:
     def getDigit(self, s: str):
-        if s.isdigit():
+        if s:
             return int(eval(s))
         else:
             return 0
