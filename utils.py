@@ -167,7 +167,7 @@ class _secGetter:
                 secs += self.hour2sec(l[:-1])
             elif l[-1] in ['S', 's']:
                 if l[0] == '-':
-                    secs -= self.getOneSec(l[1:-1])
+                    secs += self.getOneSec(l[0:-1])
                 else:
                     secs += self.getOneSec(l[:-1])
             elif l.isdigit():
