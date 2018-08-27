@@ -20,6 +20,7 @@ banmyself - 把自己ban掉[36,66]秒
 ban - 我就是要滥权！
 fake_banmyself - 虚假的ban自己
 chat - [message] 与机器人聊天，有参数时将回复参数，无参数时做为自动聊天的开关
+gtranslate - [text] 中嘤互译
 
 ----------
 """
@@ -40,7 +41,7 @@ import utils
 import requests
 import sys, os
 from ban_user_tools import BanUser
-from utils import (search_google, search_bing, search_baidu, search_ddg)
+from utils import (search_google, search_bing, search_baidu, search_ddg, goltrans)
 
 
 # for new feature
@@ -304,8 +305,7 @@ def main(path):
 
     updater = Updater(token=TOKEN)
     dp = updater.dispatcher
-    dp.add_handler(MessageHandler(Filters.text, read_message))
-    dp.add_handler(MessageHandler(Filters.sticker, read_message))
+    dp.add_handler(MessageHandler(Filters.text|Filters.sticker, read_message))
     dp.add_handler(CommandHandler('banmyself', banmyself))
     dp.add_handler(CommandHandler('ban', ban))
     dp.add_handler(CommandHandler('fake_banmyself', fake_banmyself))
@@ -328,6 +328,7 @@ def main(path):
     dp.add_handler(CommandHandler('shutdown', sleep))
     dp.add_handler(CommandHandler('chat', chat, pass_args=True))
     dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
+    dp.add_handler(CommandHandler('gtranslate', goltrans, pass_args=True))
     updater.start_polling()
 
 
