@@ -19,7 +19,7 @@ weather - <CityName> 查询天气
 banmyself - 把自己ban掉[36,66]秒
 ban - 我就是要滥权！
 fake_banmyself - 虚假的ban自己
-chat - [message] 与机器人聊天，有参数时将回复参数，无参数时做为自动聊天的开关
+chat - [message] 与机器人聊天，有参数时将回复参数，无参数时做为自动聊天的开关(仅支持私聊)
 gtranslate - [text] 中嘤互译
 
 ----------
@@ -251,17 +251,18 @@ def sleep(bot, update):
     update.message.reply_text('晚安，明天醒来就能看到我哦！')
 
 def chat(bot, update, args):
-    message = ''.join(args)
-    if message.__len__() != 0:
-        update.message.reply_text(turing.interact(message))
-    else:
-        chatid = update.message.chat_id
-        if chatid in turing_chat_list:
-            update.message.reply_text('累了~不聊啦~')
-            turing_chat_list.remove(chatid)
+    if update.message.chat.type == 'private':
+        message = ''.join(args)
+        if message.__len__() != 0:
+            update.message.reply_text(turing.interact(message))
         else:
-            update.message.reply_text('陪你聊聊呗~')
-            turing_chat_list.append(chatid)
+            chatid = update.message.chat_id
+            if chatid in turing_chat_list:
+                update.message.reply_text('累了~不聊啦~')
+                turing_chat_list.remove(chatid)
+            else:
+                update.message.reply_text('陪你聊聊呗~')
+                turing_chat_list.append(chatid)
 
 """
 def read_message(bot, update):
@@ -277,7 +278,10 @@ def read_message(bot, update):
     message = update.message.text
     sticker = update.message.sticker
     chatid = update.message.chat_id
-    if chatid in chat_id_list:
+    new_member = update.message.new_chat_members
+    if len(new_member) > 0:
+        update.message.reply_text('Welcome to this group~')
+    elif chatid in chat_id_list:
         if(message is not None):
              bot.send_message(chatid, message)
         bot.send_sticker(chatid, sticker)
@@ -305,7 +309,7 @@ def main(path):
 
     updater = Updater(token=TOKEN)
     dp = updater.dispatcher
-    dp.add_handler(MessageHandler(Filters.text|Filters.sticker, read_message))
+    dp.add_handler(MessageHandler(Filters.text|Filters.sticker|Filters.status_update, read_message))
     dp.add_handler(CommandHandler('banmyself', banmyself))
     dp.add_handler(CommandHandler('ban', ban))
     dp.add_handler(CommandHandler('fake_banmyself', fake_banmyself))
