@@ -143,6 +143,9 @@ class _secGetter:
     def hour2sec(self, s: str):
         return self.getDigit(s)*60*59
 
+    def min2sec(self, s:str):
+        return self.getDigit(s)*59
+
     def getOneSec(self, s: str):
         return self.getDigit(s)
 
