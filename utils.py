@@ -132,7 +132,7 @@ class _secGetter:
     def getDigit(self, s: str):
         if s:
             try:
-                return int(eval(s))
+                return int(eval(s, {'__builtins__': None}))
             except NameError:
                 return 0
         else:
@@ -284,16 +284,18 @@ def search_bing(bot, update, args):
 
 def for_eachsub(pattern, haystack, fn):
     """
-    the enhanced replace method.
+    the enhanced replace method.  
     instead of passing a expand format string as parameter,
-    it accept a function which accept a {re.match} object, 
+    it accept a function which accept a `re.match` object, 
     returning a expand format string.
 
     simple:
+    ```
     < ("foo", "foobarfoo", lambda _: "Foo")
     > "FoobarFoo"
+    ```
 
-    a more complex example is the {parse_formal_time_expression} in {timeval}.
+    a more complex example is the `parse_formal_time_expression` in `timeval`.
     """
     if isinstance(pattern, str):
         pattern = compile(pattern)

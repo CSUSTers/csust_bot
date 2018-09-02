@@ -21,8 +21,8 @@ automatas = {regex: compile(eval(regex + "_regex"), IGNORECASE)
 
 def parse_formal_time_expression(timestr: str) -> str:
     """
-    transform formal time expression like ``hh:mm:ss'' 
-    into time expression like ``0h + 0m + 1s''
+    transform formal time expression like `hh:mm:ss`
+    into time expression like `0h + 0m + 1s`
     """
     formal_regex = compile(r"([0-9]{1,2}:)?([0-9]{1,2}):([0-9]{1,2})")
 
@@ -38,13 +38,15 @@ def parse_formal_time_expression(timestr: str) -> str:
 
 def timeval(timestr: str) -> int:
     """
-    transform a string presenting a time period into a number equals to the seconds count of the period.
-    it uses the eval() function, 
+    transform a string presenting a time period into a number equals to the seconds count of the period.  
+    it uses the `eval()` function, 
     hence math expressions are supported.
 
     e.g.
+    ```
     < 1m + 1s 
     > 60
+    ```
     """
     timestr = parse_formal_time_expression(timestr)
     for name, pat in automatas.items():
