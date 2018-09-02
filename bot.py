@@ -240,7 +240,10 @@ def question(bot, update):
 
 
 def boot(bot, update):
-    update.message.reply_text('早上好，今天也是元气满满的一天哦！')
+    t = '早上好，今天也是元气满满的一天哦！'
+    if random.random() < 0.1:
+        t = '早上好，今天也是援气满满的一天哦！'
+    update.message.reply_text(t)
 
 
 def sleep(bot, update):
