@@ -247,6 +247,10 @@ def sleep(bot, update):
     update.message.reply_text('晚安，明天醒来就能看到我哦！')
 
 
+def donotsleep(bot, update):
+    update.message.reply_text('睡你麻痹起来嗨！')
+
+
 """
 def read_message(bot, update):
     message = update.message.text
@@ -310,6 +314,7 @@ def main(path):
     dp.add_handler(CommandHandler('boot', boot))
     dp.add_handler(CommandHandler('poweroff', sleep))
     dp.add_handler(CommandHandler('shutdown', sleep))
+    dp.add_handler(CommandHandler('halt', sleep))
     dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
     updater.start_polling()
 
