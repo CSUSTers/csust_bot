@@ -317,7 +317,7 @@ def main(path):
     dp.add_handler(CommandHandler('boot', boot))
     dp.add_handler(CommandHandler('poweroff', sleep))
     dp.add_handler(CommandHandler('shutdown', sleep))
-    dp.add_handler(CommandHandler('halt', sleep))
+    dp.add_handler(CommandHandler('halt', donotsleep))
     dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
     updater.start_polling()
 
