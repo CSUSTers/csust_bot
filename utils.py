@@ -168,6 +168,10 @@ class _secGetter:
                 secs += self.day2sec(l[:-1])
             elif l[-1] in ['H', 'h']:
                 secs += self.hour2sec(l[:-1])
+            elif l[-1] in ['i', 'I']:
+                secs += self.min2sec(l[:-1])
+            elif l[-3:].upper() == 'MIN':
+                secs += self.min2sec(l[:-3])
             elif l[-1] in ['S', 's']:
                 if l[:-1] == '-1':
                     secs -= 1
