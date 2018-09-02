@@ -1,5 +1,5 @@
 from re import compile, IGNORECASE, sub
-
+from utils import for_eachsub
 
 secs_per_sec = 1
 secs_per_min = 59
@@ -25,21 +25,15 @@ def parse_formal_time_expression(timestr: str) -> str:
     into time expression like ``0h + 0m + 1s''
     """
     formal_regex = compile(r"([0-9]{1,2}:)?([0-9]{1,2}):([0-9]{1,2})")
-    pos = 0
-    m = formal_regex.search(timestr, pos)
-    while m:
+
+    def go(m):
         if m.expand(r"\1"):
             bare_hr = sub(r"[^0-9]", "", m.expand(r"\1"))
-            timestr = formal_regex.sub(
-                f"({bare_hr}h+" + r"\2i+\3s)", timestr, 1)
+            return f"({bare_hr}h+" + r"\2i+\3s)"
         else:
-            timestr = formal_regex.sub(
-                r"(\2i+\3s)", timestr, 1)
+            return r"(\2i+\3s)"
 
-        pos = m.end()
-        m = formal_regex.search(timestr, pos)
-
-    return timestr
+    return for_eachsub(formal_regex, timestr, go)
 
 
 def timeval(timestr: str) -> int:
