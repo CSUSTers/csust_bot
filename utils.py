@@ -293,7 +293,7 @@ def for_eachsub(pattern, haystack, fn):
     < ("foo", "foobarfoo", lambda _: "Foo")
     > "FoobarFoo"
 
-    a more complex example is the {parse_formal_time_expression} in this module.
+    a more complex example is the {parse_formal_time_expression} in {timeval}.
     """
     if isinstance(pattern, str):
         pattern = compile(pattern)

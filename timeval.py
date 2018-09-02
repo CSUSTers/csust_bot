@@ -57,5 +57,9 @@ if __name__ == "__main__":
     """
     space for unit tests.
     """
-    base_test_case = "1:00 == 59s"
-    print(base_test_case, " -> ", timeval(base_test_case))
+    cases = ["1:00:00 + 1s", "1:00:00 == 1:00",
+             "1:00 + 1:00", "1:2:3 + 2:3", "1:2:3 + 1:2:3",
+             "(1h+2i+3s)+(1h+2i+3s)", "1:2:3 + 1:2:3 == (1h+2i+3s)+(1h+2i+3s)",
+             "1:00 == 59s"]
+    for case in cases:
+        print(case, " -> ", timeval(case))
