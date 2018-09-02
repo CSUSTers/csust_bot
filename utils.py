@@ -187,6 +187,10 @@ class _secGetter:
 SecGetter = _secGetter()
 
 
+"""
+感觉下面的这段代码就很流水线化生产
+"""
+
 search_dict = {
     'google': 'https://www.google.com/search?q={q}',
     'bing': 'https://bing.com/search?q={q}',
