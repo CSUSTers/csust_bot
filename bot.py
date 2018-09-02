@@ -127,7 +127,7 @@ def ban(bot, update):
         return
     
     chat_member = bot.get_chat_member(update.message.chat_id, update.message.from_user.id)
-    if not chat_member.can_restrict_members or chat_member.status == 'creator':
+    if not (chat_member.can_restrict_members or chat_member.status == 'creator'):
         banmyself(bot, update)
     else:
         message = update.message.reply_to_message
