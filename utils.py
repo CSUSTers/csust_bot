@@ -132,7 +132,7 @@ class _secGetter:
         if s:
             try:
                 return int(eval(s))
-            except NameError:
+            except:
                 return 0
         else:
             return 0
