@@ -3,6 +3,7 @@ from operator import add, mod
 from functools import reduce
 from telegram.ext import Updater
 from telegram import error, Bot
+from re import compile
 
 import re
 
@@ -134,8 +135,13 @@ class _secGetter:
         s = ''.join(re.split('[a-zA-Z]', s))
         if s:
             try:
+<<<<<<< HEAD
                 return int(eval(s))
             except:
+=======
+                return int(eval(s, {'__builtins__': None}))
+            except NameError:
+>>>>>>> fb949ea8d1747a6f7e8aaee320c2b1fadcb91a0a
                 return 0
         else:
             return 0
@@ -149,7 +155,7 @@ class _secGetter:
     def hour2sec(self, s: str):
         return self.getDigit(s)*60*59
 
-    def min2sec(self, s:str):
+    def min2sec(self, s: str):
         return self.getDigit(s)*59
 
     def getOneSec(self, s: str):
@@ -247,7 +253,8 @@ def bing(key_words):
 
 def search_google(bot, update, args):
     if args:
-        replyText = search(bot, update, 'Google') + get_search_url('google', args)
+        replyText = search(bot, update, 'Google') + \
+            get_search_url('google', args)
     else:
         replyText = '请输入关键字. '
     bot.send_message(update.message.chat_id,
@@ -265,7 +272,8 @@ def search_baidu(bot, update, args):
 
 def search_ddg(bot, update, args):
     if args:
-        replyText = search(bot, update, 'DuckDuckGo') + get_search_url('ddg', args)
+        replyText = search(bot, update, 'DuckDuckGo') + \
+            get_search_url('ddg', args)
     else:
         replyText = '请输入关键字. '
     bot.send_message(update.message.chat_id,
@@ -274,8 +282,38 @@ def search_ddg(bot, update, args):
 
 def search_bing(bot, update, args):
     if args:
-        replyText = search(bot, update, '巨硬御用的Bing') + get_search_url('bing', args)
+        replyText = search(bot, update, '巨硬御用的Bing') + \
+            get_search_url('bing', args)
     else:
         replyText = '请输入关键字. '
     bot.send_message(update.message.chat_id,
                      replyText, parse_mode='Markdown')
+
+
+def for_eachsub(pattern, haystack, fn):
+    """
+    the enhanced replace method.  
+    instead of passing a expand format string as parameter,
+    it accept a function which accept a `re.match` object, 
+    returning a expand format string.
+
+    simple:
+    ```
+    < ("foo", "foobarfoo", lambda _: "Foo")
+    > "FoobarFoo"
+    ```
+
+    a more complex example is the `parse_formal_time_expression` in `timeval`.
+    """
+    if isinstance(pattern, str):
+        pattern = compile(pattern)
+
+    pos = 0
+    m = pattern.search(haystack, pos)
+    while m:
+        haystack = pattern.sub(
+            fn(m), haystack, 1)
+        pos = m.end()
+        m = pattern.search(haystack, pos)
+
+    return haystack
