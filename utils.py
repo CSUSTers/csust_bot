@@ -135,13 +135,8 @@ class _secGetter:
         s = ''.join(re.split('[a-zA-Z]', s))
         if s:
             try:
-<<<<<<< HEAD
                 return int(eval(s))
             except:
-=======
-                return int(eval(s, {'__builtins__': None}))
-            except NameError:
->>>>>>> fb949ea8d1747a6f7e8aaee320c2b1fadcb91a0a
                 return 0
         else:
             return 0
