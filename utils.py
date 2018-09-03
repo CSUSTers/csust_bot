@@ -4,6 +4,8 @@ from functools import reduce
 from telegram.ext import Updater
 from telegram import error, Bot
 
+import re
+
 
 def url_encode(s: str):
     """
@@ -129,6 +131,7 @@ class RequestBuilder(JSONBuilder):
 
 class _secGetter:
     def getDigit(self, s: str):
+        s = ''.join(re.split('[a-zA-Z]', s))
         if s:
             try:
                 return int(eval(s))
