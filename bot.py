@@ -56,11 +56,16 @@ questions = {}
 answers = {}
 
 # for real_record
-chat_id_list = []
+record_chat_id_list = []
 
 # for turing_chat
 turing = turing_robot()
 turing_chat_list = []
+
+# del stkers
+no_stker_chat_dict = {}
+stker_dict = {}
+
 
 # working path
 # working_path = ''
@@ -173,12 +178,12 @@ def record(bot, update):
 
 def real_record(bot, update):
     chatid = update.message.chat_id
-    if chatid in chat_id_list:
+    if chatid in record_chat_id_list:
         bot.send_message(update.message.chat_id, '好累啊,休息休息...')
-        chat_id_list.remove(chatid)
+        record_chat_id_list.remove(chatid)
     else:
         bot.send_message(update.message.chat_id, '复读机!复读机!')
-        chat_id_list.append(chatid)
+        record_chat_id_list.append(chatid)
 
     # replyText = fiddler(update.message.text)
     # while conti:
@@ -264,6 +269,25 @@ def chat(bot, update, args):
                 update.message.reply_text('陪你聊聊呗~')
                 turing_chat_list.append(chatid)
 
+
+def no_sticker(bot, update, args):
+    mode = 0
+    if(len(args) > 0):
+        try:
+            mode = int(args[0])
+        except ValueError:
+            mode = 0
+    chatid = update.message.chat_id
+    if mode < 0 or mode > 100:
+        bot.send_message(update.message.chat_id, "Happy time!")
+        del no_stker_chat_dict[chatid]
+        del stker_dict[chatid]
+    else:
+        bot.send_message(update.message.chat_id, "Don't send sticker!")
+        no_stker_chat_dict[chatid] = mode
+        stker_dict[chatid] = []
+
+
 """
 def read_message(bot, update):
     message = update.message.text
@@ -281,15 +305,20 @@ def read_message(bot, update):
     new_member = update.message.new_chat_members
     if len(new_member) > 0:
         update.message.reply_text('Welcome to this group~')
-    elif chatid in chat_id_list:
+    elif chatid in record_chat_id_list:
         if(message is not None):
-             bot.send_message(chatid, message)
-        bot.send_sticker(chatid, sticker)
+            bot.send_message(chatid, message)
+        if(sticker is not None):
+            bot.send_sticker(chatid, sticker)
     elif chatid in turing_chat_list:
         update.message.reply_text(turing.interact(message))
+    if chatid in no_stker_chat_dict and sticker is not None:
+        stker_dict[chatid].append(update.message.message_id)
+        if len(stker_dict[chatid]) > no_stker_chat_dict[chatid]:
+            bot.delete_message(chatid, stker_dict[chatid][0])
+            del stker_dict[chatid][0]
 
-
-
+    
 
 def main(path):
     global data_dict, QnA_dict, links_dict, about_str, \
@@ -330,6 +359,7 @@ def main(path):
     dp.add_handler(CommandHandler('boot', boot))
     dp.add_handler(CommandHandler('poweroff', sleep))
     dp.add_handler(CommandHandler('shutdown', sleep))
+    dp.add_handler(CommandHandler('no_sticker', no_sticker, pass_args=True))
     dp.add_handler(CommandHandler('chat', chat, pass_args=True))
     dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
     dp.add_handler(CommandHandler('gtranslate', goltrans, pass_args=True))
