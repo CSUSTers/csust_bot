@@ -308,7 +308,7 @@ def read_message(bot, update):
     elif chatid in record_chat_id_list:
         if(message is not None):
             bot.send_message(chatid, message)
-        if(sticker is not None):
+        if(sticker is not None and chatid not in no_stker_chat_dict):
             bot.send_sticker(chatid, sticker)
     elif chatid in turing_chat_list:
         update.message.reply_text(turing.interact(message))
