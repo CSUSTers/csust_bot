@@ -7,18 +7,10 @@ import requests
 import json
 import re
 
-
-def weather_qy(bot, update, args):
-    # cty = ''.join(args)
-    # city = ''
-    # for c in cty:
-    #    if '\u4e00' <= c <= '\u9fff':
-    #        city += c
-
-    city = ''.join(re.split(r'[!@#$%^&*\(\):"<>?;,./*-+=', ''.join(args)))
-    if city.__len__() == 0:
-        bot.send_message(update.message.chat_id, '您想查询什么城市呢~')
-    else:
+def wther(args):
+    replyText = '您想查询什么城市呢~'
+    city = ''.join(re.split(r'[!@#$%^&*\(\):"<>?;,./*-+=]', ' '.join(args)))
+    if len(city) > 0:
         url = 'http://api.map.baidu.com/telematics/v3/weather?location=%s&output=json&ak=TueGDhCvwI6fOrQnLM0qmXxY9N0OkOiQ' \
               '&callback=?' % city
         replyText = ''
@@ -39,4 +31,12 @@ def weather_qy(bot, update, args):
                 replyText = replyText + date + ': ' + weather + ' ' + wind + temperature + '\n'
         else:
             replyText = '没有查询到'+city+'的天气信息哦~~'
-        bot.send_message(update.message.chat_id, replyText)
+    return replyText
+
+def weather_qy(bot, update, args):
+    # cty = ''.join(args)
+    # city = ''
+    # for c in cty:
+    #    if '\u4e00' <= c <= '\u9fff':
+    #        city += c
+    bot.send_message(update.message.chat_id, wther(args))

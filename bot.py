@@ -21,16 +21,17 @@ ban - 我就是要滥权！
 fake_banmyself - 虚假的ban自己
 chat - [message] 与机器人聊天，有参数时将回复参数，无参数时做为自动聊天的开关(仅支持私聊)
 gtranslate - [text] 中嘤互译
+no_sticker - [num] 仅保留num条sticker，num小于0或大于100退出no_sticker模式
 
 ----------
 """
 import datetime
-
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler, CallbackQueryHandler
-from telegram import error, Bot, Chat, User, Message, ChatMember, Sticker, InlineKeyboardMarkup, InlineKeyboardButton
+from uuid import uuid4
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler, CallbackQueryHandler, InlineQueryHandler
+from telegram import error, Bot, Chat, User, Message, ChatMember, Sticker, InlineKeyboardMarkup, InlineKeyboardButton, InlineQuery, InlineQueryResultArticle, InputTextMessageContent
 
 from config import TOKEN
-from weather_query import weather_qy
+from weather_query import weather_qy, wther
 from utils import SecGetter
 from turing_robot import turing_robot
 
@@ -342,6 +343,19 @@ def cbk(bot, update):
         bot.send_message(chat_id, '???')
 
 
+def inlinequery(bot, update):
+    query = update.inline_query.query
+    results = [
+        InlineQueryResultArticle(
+            id=uuid4(),
+            title="Weather in " + query,
+            input_message_content=InputTextMessageContent(
+                '\n' + wther(query)
+            )
+        )
+    ]
+    update.inline_query.answer(results)
+
 
 def main(path):
     global data_dict, QnA_dict, links_dict, about_str, \
@@ -385,6 +399,7 @@ def main(path):
     dp.add_handler(CommandHandler('no_sticker', no_sticker, pass_args=True))
     dp.add_handler(CommandHandler('chat', chat, pass_args=True))
     dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
+    dp.add_handler(InlineQueryHandler(inlinequery))
     dp.add_handler(CommandHandler('gtranslate', goltrans, pass_args=True))
     dp.add_handler(CommandHandler('kbrs', kbrs))
     dp.add_handler(CallbackQueryHandler(cbk))
