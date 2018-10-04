@@ -26,8 +26,8 @@ gtranslate - [text] 中嘤互译
 """
 import datetime
 
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler
-from telegram import error, Bot, Chat, User, Message, ChatMember, Sticker
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler, CallbackQueryHandler
+from telegram import error, Bot, Chat, User, Message, ChatMember, Sticker, InlineKeyboardMarkup, InlineKeyboardButton
 
 from config import TOKEN
 from weather_query import weather_qy
@@ -320,6 +320,29 @@ def read_message(bot, update):
 
     
 
+def kbrs(bot, update):
+
+    keyboard = [
+        [InlineKeyboardButton('远神天下第一', callback_data='3')],
+        [InlineKeyboardButton('小明天下第一', callback_data='4')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    bot.send_message(update.message.chat_id, '恐怖如斯？',  reply_markup=reply_markup)
+
+
+def cbk(bot, update):
+    query = update.callback_query
+    text = query.data
+    chat_id=query.message.chat_id
+    if text == '3':
+        bot.send_message(chat_id, '远神宇宙第一')
+    elif text == '4':
+        bot.send_message(chat_id, '小明宇宙第一')
+    else:
+        bot.send_message(chat_id, '???')
+
+
+
 def main(path):
     global data_dict, QnA_dict, links_dict, about_str, \
         question_keys, questions, answers, main_links, friend_links
@@ -363,6 +386,8 @@ def main(path):
     dp.add_handler(CommandHandler('chat', chat, pass_args=True))
     dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
     dp.add_handler(CommandHandler('gtranslate', goltrans, pass_args=True))
+    dp.add_handler(CommandHandler('kbrs', kbrs))
+    dp.add_handler(CallbackQueryHandler(cbk))
     updater.start_polling()
 
 
