@@ -4,6 +4,9 @@ from functools import reduce
 from telegram.ext import Updater
 from telegram import error, Bot
 from googletrans import Translator
+from re import compile
+
+import re
 
 
 def url_encode(s: str):
@@ -130,8 +133,12 @@ class RequestBuilder(JSONBuilder):
 
 class _secGetter:
     def getDigit(self, s: str):
-        if s.isdigit():
-            return int(s)
+        s = ''.join(re.split('[a-zA-Z]', s))
+        if s:
+            try:
+                return int(eval(s))
+            except:
+                return 0
         else:
             return 0
 
@@ -143,6 +150,9 @@ class _secGetter:
 
     def hour2sec(self, s: str):
         return self.getDigit(s)*60*59
+
+    def min2sec(self, s: str):
+        return self.getDigit(s)*59
 
     def getOneSec(self, s: str):
         return self.getDigit(s)
@@ -166,9 +176,13 @@ class _secGetter:
                 secs += self.day2sec(l[:-1])
             elif l[-1] in ['H', 'h']:
                 secs += self.hour2sec(l[:-1])
+            elif l[-1] in ['i', 'I']:
+                secs += self.min2sec(l[:-1])
+            elif l[-3:].upper() == 'MIN':
+                secs += self.min2sec(l[:-3])
             elif l[-1] in ['S', 's']:
-                if l[0] == '-':
-                    secs -= self.getOneSec(l[1:-1])
+                if l[:-1] == '-1':
+                    secs -= 1
                 else:
                     secs += self.getOneSec(l[:-1])
             elif l.isdigit():
@@ -180,6 +194,10 @@ class _secGetter:
 
 SecGetter = _secGetter()
 
+
+"""
+感觉下面的这段代码就很流水线化生产
+"""
 
 search_dict = {
     'google': 'https://www.google.com/search?q={q}',
@@ -231,7 +249,8 @@ def bing(key_words):
 
 def search_google(bot, update, args):
     if args:
-        replyText = search(bot, update, 'Google') + get_search_url('google', args)
+        replyText = search(bot, update, 'Google') + \
+            get_search_url('google', args)
     else:
         replyText = '请输入关键字. '
     bot.send_message(update.message.chat_id,
@@ -249,7 +268,8 @@ def search_baidu(bot, update, args):
 
 def search_ddg(bot, update, args):
     if args:
-        replyText = search(bot, update, 'DuckDuckGo') + get_search_url('ddg', args)
+        replyText = search(bot, update, 'DuckDuckGo') + \
+            get_search_url('ddg', args)
     else:
         replyText = '请输入关键字. '
     bot.send_message(update.message.chat_id,
@@ -258,7 +278,8 @@ def search_ddg(bot, update, args):
 
 def search_bing(bot, update, args):
     if args:
-        replyText = search(bot, update, '巨硬御用的Bing') + get_search_url('bing', args)
+        replyText = search(bot, update, '巨硬御用的Bing') + \
+            get_search_url('bing', args)
     else:
         replyText = '请输入关键字. '
     bot.send_message(update.message.chat_id,
@@ -281,3 +302,33 @@ def goltrans(bot, update, args):
         update.message.reply_text(text)
     else:
         update.message.reply_text('想翻译什么呢~')
+
+        
+def for_eachsub(pattern, haystack, fn):
+    """
+    the enhanced replace method.  
+    instead of passing a expand format string as parameter,
+    it accept a function which accept a `re.match` object, 
+    returning a expand format string.
+
+    simple:
+    ```
+    < ("foo", "foobarfoo", lambda _: "Foo")
+    > "FoobarFoo"
+    ```
+
+    a more complex example is the `parse_formal_time_expression` in `timeval`.
+    """
+    if isinstance(pattern, str):
+        pattern = compile(pattern)
+
+    pos = 0
+    m = pattern.search(haystack, pos)
+    while m:
+        haystack = pattern.sub(
+            fn(m), haystack, 1)
+        pos = m.end()
+        m = pattern.search(haystack, pos)
+
+    return haystack
+
