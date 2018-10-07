@@ -323,8 +323,8 @@ def read_message(bot, update):
             bot.send_message(chatid, message)
         if(sticker is not None and chatid not in no_stker_chat_dict):
             bot.send_sticker(chatid, sticker)
-    elif chatid in turing_chat_list:
-        update.message.reply_text(turing.interact(message))
+    #elif chatid in turing_chat_list:
+    #    update.message.reply_text(turing.interact(message))
     if chatid in no_stker_chat_dict and sticker is not None:
         stker_dict[chatid].append(update.message.message_id)
         if len(stker_dict[chatid]) > no_stker_chat_dict[chatid]:
