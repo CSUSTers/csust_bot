@@ -21,7 +21,11 @@ ban - 我就是要滥权！
 fake_banmyself - 虚假的ban自己
 chat - [message] 与机器人聊天，有参数时将回复参数，无参数时做为自动聊天的开关(仅支持私聊)
 gtranslate - [text] 中嘤互译
+<<<<<<< HEAD
 no_sticker - [num] 仅保留num条sticker，num小于0或大于100退出no_sticker模式
+=======
+no_sticker - [num] 聊天时仅保留num个sticker，默认为0，小于零或大于100退出no_sticker模式
+>>>>>>> beta
 
 ----------
 """
