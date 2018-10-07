@@ -3,6 +3,7 @@ from operator import add, mod
 from functools import reduce
 from telegram.ext import Updater
 from telegram import error, Bot
+from googletrans import Translator
 
 
 def url_encode(s: str):
@@ -262,3 +263,21 @@ def search_bing(bot, update, args):
         replyText = '请输入关键字. '
     bot.send_message(update.message.chat_id,
                      replyText, parse_mode='Markdown')
+
+
+
+def goltrans(bot, update, args):
+    if args:
+        text = ' '.join(args)
+        flag = 1
+        for c in text:
+            if '\u4e00' <= c <= '\u9fff':
+                flag = 0
+        tr = Translator()
+        if flag:
+            text = tr.translate(text, dest='zh-CN').text
+        else:
+            text = tr.translate(text, dest='en').text
+        update.message.reply_text(text)
+    else:
+        update.message.reply_text('想翻译什么呢~')

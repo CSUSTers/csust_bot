@@ -19,17 +19,21 @@ weather - <CityName> 查询天气
 banmyself - 把自己ban掉[36,66]秒
 ban - 我就是要滥权！
 fake_banmyself - 虚假的ban自己
+chat - [message] 与机器人聊天，有参数时将回复参数，无参数时做为自动聊天的开关(仅支持私聊)
+gtranslate - [text] 中嘤互译
+no_sticker - [num] 聊天时仅保留num个sticker，默认为0，小于零或大于100退出no_sticker模式
 
 ----------
 """
 import datetime
-
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler
-from telegram import error, Bot, Chat, User, Message, ChatMember
+from uuid import uuid4
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler, CallbackQueryHandler, InlineQueryHandler
+from telegram import error, Bot, Chat, User, Message, ChatMember, Sticker, InlineKeyboardMarkup, InlineKeyboardButton, InlineQuery, InlineQueryResultArticle, InputTextMessageContent
 
 from config import TOKEN
-from weather_query import weather_qy
+from weather_query import weather_qy, wther
 from utils import SecGetter
+from turing_robot import turing_robot
 
 import json
 import random
@@ -38,7 +42,7 @@ import utils
 import requests
 import sys, os
 from ban_user_tools import BanUser
-from utils import (search_google, search_bing, search_baidu, search_ddg)
+from utils import (search_google, search_bing, search_baidu, search_ddg, goltrans)
 
 
 # for new feature
@@ -53,7 +57,16 @@ questions = {}
 answers = {}
 
 # for real_record
-chat_id_list = []
+record_chat_id_list = []
+
+# for turing_chat
+turing = turing_robot()
+turing_chat_list = []
+
+# del stkers
+no_stker_chat_dict = {}
+stker_dict = {}
+
 
 # working path
 # working_path = ''
@@ -166,12 +179,12 @@ def record(bot, update):
 
 def real_record(bot, update):
     chatid = update.message.chat_id
-    if chatid in chat_id_list:
+    if chatid in record_chat_id_list:
         bot.send_message(update.message.chat_id, '好累啊,休息休息...')
-        chat_id_list.remove(chatid)
+        record_chat_id_list.remove(chatid)
     else:
         bot.send_message(update.message.chat_id, '复读机!复读机!')
-        chat_id_list.append(chatid)
+        record_chat_id_list.append(chatid)
 
     # replyText = fiddler(update.message.text)
     # while conti:
@@ -243,10 +256,43 @@ def boot(bot, update):
 def sleep(bot, update):
     update.message.reply_text('晚安，明天醒来就能看到我哦！')
 
+def chat(bot, update, args):
+    if update.message.chat.type == 'private':
+        message = ''.join(args)
+        if message.__len__() != 0:
+            update.message.reply_text(turing.interact(message))
+        else:
+            chatid = update.message.chat_id
+            if chatid in turing_chat_list:
+                update.message.reply_text('累了~不聊啦~')
+                turing_chat_list.remove(chatid)
+            else:
+                update.message.reply_text('陪你聊聊呗~')
+                turing_chat_list.append(chatid)
+
+
+def no_sticker(bot, update, args):
+    mode = 0
+    if(len(args) > 0):
+        try:
+            mode = int(args[0])
+        except ValueError:
+            mode = 0
+    chatid = update.message.chat_id
+    if mode < 0 or mode > 100:
+        bot.send_message(update.message.chat_id, "Happy time!")
+        del no_stker_chat_dict[chatid]
+        del stker_dict[chatid]
+    else:
+        bot.send_message(update.message.chat_id, "Don't send sticker!")
+        no_stker_chat_dict[chatid] = mode
+        stker_dict[chatid] = []
+
 
 """
 def read_message(bot, update):
     message = update.message.text
+    sticker = update.message.sticker
     chatid = update.message.chat_id
     if chatid in chat_id_list:
         bot.send_message(chatid, message)
@@ -257,14 +303,58 @@ def read_message(bot, update):
     message = update.message.text
     sticker = update.message.sticker
     chatid = update.message.chat_id
-    if chatid in chat_id_list:
+    new_member = update.message.new_chat_members
+    if len(new_member) > 0:
+        update.message.reply_text('Welcome to this group~')
+    elif chatid in record_chat_id_list:
         if(message is not None):
-             bot.send_message(chatid, message)
-        bot.send_sticker(chatid, sticker)
+            bot.send_message(chatid, message)
+        if(sticker is not None and chatid not in no_stker_chat_dict):
+            bot.send_sticker(chatid, sticker)
     elif chatid in turing_chat_list:
         update.message.reply_text(turing.interact(message))
+    if chatid in no_stker_chat_dict and sticker is not None:
+        stker_dict[chatid].append(update.message.message_id)
+        if len(stker_dict[chatid]) > no_stker_chat_dict[chatid]:
+            bot.delete_message(chatid, stker_dict[chatid][0])
+            del stker_dict[chatid][0]
+
+    
+
+def kbrs(bot, update):
+
+    keyboard = [
+        [InlineKeyboardButton('远神天下第一', callback_data='3')],
+        [InlineKeyboardButton('小明天下第一', callback_data='4')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    bot.send_message(update.message.chat_id, '恐怖如斯？',  reply_markup=reply_markup)
 
 
+def cbk(bot, update):
+    query = update.callback_query
+    text = query.data
+    chat_id=query.message.chat_id
+    if text == '3':
+        bot.send_message(chat_id, '远神宇宙第一')
+    elif text == '4':
+        bot.send_message(chat_id, '小明宇宙第一')
+    else:
+        bot.send_message(chat_id, '???')
+
+
+def inlinequery(bot, update):
+    query = update.inline_query.query
+    results = [
+        InlineQueryResultArticle(
+            id=uuid4(),
+            title="Weather in " + query,
+            input_message_content=InputTextMessageContent(
+                '\n' + wther(query)
+            )
+        )
+    ]
+    update.inline_query.answer(results)
 
 
 def main(path):
@@ -285,8 +375,7 @@ def main(path):
 
     updater = Updater(token=TOKEN)
     dp = updater.dispatcher
-    dp.add_handler(MessageHandler(Filters.text, read_message))
-    dp.add_handler(MessageHandler(Filters.sticker, read_message))
+    dp.add_handler(MessageHandler(Filters.text|Filters.sticker|Filters.status_update, read_message))
     dp.add_handler(CommandHandler('banmyself', banmyself))
     dp.add_handler(CommandHandler('ban', ban))
     dp.add_handler(CommandHandler('fake_banmyself', fake_banmyself))
@@ -307,7 +396,13 @@ def main(path):
     dp.add_handler(CommandHandler('boot', boot))
     dp.add_handler(CommandHandler('poweroff', sleep))
     dp.add_handler(CommandHandler('shutdown', sleep))
+    dp.add_handler(CommandHandler('no_sticker', no_sticker, pass_args=True))
+    dp.add_handler(CommandHandler('chat', chat, pass_args=True))
     dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
+    dp.add_handler(InlineQueryHandler(inlinequery))
+    dp.add_handler(CommandHandler('gtranslate', goltrans, pass_args=True))
+    dp.add_handler(CommandHandler('kbrs', kbrs))
+    dp.add_handler(CallbackQueryHandler(cbk))
     updater.start_polling()
 
 
