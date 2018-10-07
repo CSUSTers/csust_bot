@@ -19,7 +19,6 @@ weather - <CityName> 查询天气
 banmyself - 把自己ban掉[36,66]秒
 ban - 我就是要滥权！
 fake_banmyself - 虚假的ban自己
-chat - [message] 与机器人聊天，有参数时将回复参数，无参数时做为自动聊天的开关(仅支持私聊)
 gtranslate - [text] 中嘤互译
 no_sticker - [num] 聊天时仅保留num个sticker，默认为0，小于零或大于100退出no_sticker模式
 
@@ -33,7 +32,6 @@ from telegram import error, Bot, Chat, User, Message, ChatMember, Sticker, Inlin
 from config import TOKEN
 from weather_query import weather_qy, wther
 from utils import SecGetter
-from turing_robot import turing_robot
 
 import json
 import random
@@ -60,8 +58,8 @@ answers = {}
 record_chat_id_list = []
 
 # for turing_chat
-turing = turing_robot()
-turing_chat_list = []
+#turing = turing_robot()
+#turing_chat_list = []
 
 # del stkers
 no_stker_chat_dict = {}
@@ -262,6 +260,8 @@ def boot(bot, update):
 def sleep(bot, update):
     update.message.reply_text('晚安，明天醒来就能看到我哦！')
 
+
+"""
 def chat(bot, update, args):
     if update.message.chat.type == 'private':
         message = ''.join(args)
@@ -275,6 +275,8 @@ def chat(bot, update, args):
             else:
                 update.message.reply_text('陪你聊聊呗~')
                 turing_chat_list.append(chatid)
+"""
+
 
 def donotsleep(bot, update):
     update.message.reply_text('睡你麻痹起来嗨！')
