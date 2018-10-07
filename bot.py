@@ -119,7 +119,7 @@ def ban_user(bot, update, user):
             success = bot.restrict_chat_member(chatid, user_id, until_time, can_send_messages,
                                             can_send_media_messages, can_send_other_messages, can_add_web_page_previews)
             if success:
-                message.reply_text('Congratulation! you have been banned for {} seconds~'.format(str(ban_sec)))
+                update.message.reply_text('Congratulations! You have been banned! Now enjoy your ' + str(ban_sec) + ' seconds~')
             else:
                 update.message.reply_text('受到电磁干扰...')
     else:
