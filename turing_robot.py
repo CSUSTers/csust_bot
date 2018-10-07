@@ -7,8 +7,11 @@ from operator import getitem
 from utils import RequestBuilder
 from json import dumps
 from copy import deepcopy
+try:
+    from config import TuringBotConfig
+except ImportError:
+    TuringBotConfig = {}
 
-from config import TuringBotConfig
 import re
 
 
