@@ -6,6 +6,7 @@ say_hello - 我是一只只会嗦hello的咸鱼
 hello_to_all - Say hello to all group members
 record - 人类的本质就是复读机，Bot也是一样的
 real_record - 复读机...复读机...复读机的开关
+no_sticker - [num] 聊天时仅保留num个sticker，默认为0，小于零或大于100退出no_sticker模式
 all_links - 这里有一些链接，如果本校同学想要添加友链也可以联系哦
 all_questions - 显示所有的问题
 all_answers - 显示所有的问题和答案
@@ -20,7 +21,6 @@ banmyself - 把自己ban掉[36,66]秒
 ban - 我就是要滥权！
 fake_banmyself - 虚假的ban自己
 gtranslate - [text] 中嘤互译
-no_sticker - [num] 聊天时仅保留num个sticker，默认为0，小于零或大于100退出no_sticker模式
 
 ----------
 """
