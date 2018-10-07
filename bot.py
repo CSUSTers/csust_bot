@@ -409,7 +409,7 @@ def main(path):
     dp.add_handler(CommandHandler('poweroff', sleep))
     dp.add_handler(CommandHandler('shutdown', sleep))
     dp.add_handler(CommandHandler('no_sticker', no_sticker, pass_args=True))
-    dp.add_handler(CommandHandler('chat', chat, pass_args=True))
+    # dp.add_handler(CommandHandler('chat', chat, pass_args=True))
     dp.add_handler(CommandHandler('halt', donotsleep))
     dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
     dp.add_handler(InlineQueryHandler(inlinequery))
