@@ -95,7 +95,10 @@ def start(bot, update):
 
 def ban_user(bot, update, user):
     user_id = user.id
-    message = update.message.reply_to_message
+    if update.message.reply_to_message:
+        message = update.message.reply_to_message
+    else:
+        message = update.message
     cmd_list = update.message.text.split()[1:]
     long_long_time = 0
     if cmd_list:
@@ -137,7 +140,7 @@ def ban(bot, update):
         return
     
     chat_member = bot.get_chat_member(update.message.chat_id, update.message.from_user.id)
-    if not chat_member.can_restrict_members or chat_member.status == 'creator':
+    if not (chat_member.can_restrict_members or chat_member.status == 'creator'):
         banmyself(bot, update)
     else:
         message = update.message.reply_to_message
@@ -250,7 +253,10 @@ def question(bot, update):
 
 
 def boot(bot, update):
-    update.message.reply_text('早上好，今天也是元气满满的一天哦！')
+    t = '早上好，今天也是元气满满的一天哦！'
+    if random.random() < 0.1:
+        t = '早上好，今天也是援气满满的一天哦！'
+    update.message.reply_text(t)
 
 
 def sleep(bot, update):
@@ -269,6 +275,10 @@ def chat(bot, update, args):
             else:
                 update.message.reply_text('陪你聊聊呗~')
                 turing_chat_list.append(chatid)
+
+def donotsleep(bot, update):
+    update.message.reply_text('睡你麻痹起来嗨！')
+
 
 
 def no_sticker(bot, update, args):
@@ -398,6 +408,7 @@ def main(path):
     dp.add_handler(CommandHandler('shutdown', sleep))
     dp.add_handler(CommandHandler('no_sticker', no_sticker, pass_args=True))
     dp.add_handler(CommandHandler('chat', chat, pass_args=True))
+    dp.add_handler(CommandHandler('halt', donotsleep))
     dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
     dp.add_handler(InlineQueryHandler(inlinequery))
     dp.add_handler(CommandHandler('gtranslate', goltrans, pass_args=True))
