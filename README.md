@@ -8,6 +8,7 @@ CSUST一群无聊的人开发，在Telegram上使用。
 需要安装的库有：
 1. ` python-telegram-bot` 使用pip安装即可
 2. `requests` 用于同图灵机器人发起交流。
+3. `googletrans` 咕果翻译
 
 ## 快速部署
 使用root用户执行以下命令（目前只支持Linux发行版）：
