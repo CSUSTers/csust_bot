@@ -273,7 +273,7 @@ def goltrans(bot, update, args):
     text = update.message.text
     lang = ''
     print(text)
-    if text:
+    if args:
         if args[0].startwith("'") and args[0].endwith("'"):
             lang = args[0].strip("'").lower()
             text = text.split(' ', 3)[2]
