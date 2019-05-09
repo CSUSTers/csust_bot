@@ -228,25 +228,6 @@ def get_search_url(name, keyswords_list):
     return base.format(words=key_words, q=encode_url_words(key_words))
 
 
-"""
-def google(key_words):
-    return '  ** [{}](https://www.google.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
-                                                                    parse_mode='Markdown')
-
-def baidu(key_words):
-    return '  ** [{}](https://www.baidu.com/s?wd={}) **'.format(' '.join(key_words), encode_url_words(key_words),
-                                                            parse_mode='Markdown')
-
-def ddg(key_words):
-    return '  ** [{}](https://duckduckgo.com/?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
-                                                            parse_mode='Markdown')
-
-def bing(key_words):
-    return '  ** [{}](https://bing.com/search?q={}) **'.format(' '.join(key_words), encode_url_words(key_words),
-                                                            parse_mode='Markdown')
-"""
-
-
 def search_google(bot, update, args):
     if args:
         replyText = search(bot, update, 'Google') + \

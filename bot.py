@@ -160,14 +160,12 @@ def fake_banmyself(bot, update):
 
 
 def say_hello(bot, update):
-    # chatId = update.message.chat_id
     replyText = "Hello.\n"
     update.message.reply_text(replyText,
                               parse_mode='Markdown')
 
 
 def hello_to_all(bot, update):
-    # chatId = update.message.chat_id
     replyText = '大家好，我是一只只会嗦hello的咸鱼.\n'
     bot.send_message(update.message.chat_id, replyText)
 
@@ -185,11 +183,6 @@ def real_record(bot, update):
     else:
         bot.send_message(update.message.chat_id, '复读机!复读机!')
         record_chat_id_list.append(chatid)
-
-    # replyText = fiddler(update.message.text)
-    # while conti:
-    #    bot.send_message(update.message.chat_id, replyText)
-    # update.message.reply_text('这个功能目前不可控，暂不开放')
 
 
 def all_links(bot, update):
@@ -368,7 +361,6 @@ def main(path):
     dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
     dp.add_handler(CommandHandler('gtranslate', goltrans, pass_args=True))
     dp.add_handler(InlineQueryHandler(inlinequery))
-    dp.add_handler(CallbackQueryHandler(cbk))
     updater.start_polling()
 
 
