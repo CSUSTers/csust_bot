@@ -8,6 +8,7 @@ from re import compile
 
 import re
 
+tr = Translator()
 
 def url_encode(s: str):
     """
@@ -268,10 +269,11 @@ def search_bing(bot, update, args):
 
 
 def goltrans(bot, update, args):
-    print(update.message.text)
-    if args:
+    global tr
+    text = update.message.text
+    print(text)
+    if text:
         lang = ''
-        text = update.message.text
         if args[0].startwith('`') and args[0].endwith('`'):
             lang = args[0].strip('`').lower()
             text = text.split(' ', 1)[1]
@@ -283,7 +285,6 @@ def goltrans(bot, update, args):
                     lang = 'en'
         """
         try:
-            tr = Translator()
             if lang:
                 text = tr.translate(text, dest=lang).text
             else:
@@ -291,6 +292,7 @@ def goltrans(bot, update, args):
         except Exception as e:
             text = '出错了？？？'
             print(e)
+            tr = Translator()
         update.message.reply_text(text)
     else:
         update.message.reply_text('想翻译什么呢~\n(私聊中使用 /translangs 可以查看目标语言代码哦)')
