@@ -294,25 +294,11 @@ def read_message(bot, update):
             bot.send_message(chatid, message)
         if(sticker is not None and chatid not in no_stker_chat_dict):
             bot.send_sticker(chatid, sticker)
-    #elif chatid in turing_chat_list:
-    #    update.message.reply_text(turing.interact(message))
     if chatid in no_stker_chat_dict and sticker is not None:
         stker_dict[chatid].append(update.message.message_id)
         if len(stker_dict[chatid]) > no_stker_chat_dict[chatid]:
             bot.delete_message(chatid, stker_dict[chatid][0])
             del stker_dict[chatid][0]
-
-
-def cbk(bot, update):
-    query = update.callback_query
-    text = query.data
-    chat_id=query.message.chat_id
-    if text == '3':
-        bot.send_message(chat_id, '远神宇宙第一')
-    elif text == '4':
-        bot.send_message(chat_id, '小明宇宙第一')
-    else:
-        bot.send_message(chat_id, '???')
 
 
 def inlinequery(bot, update):
@@ -321,15 +307,12 @@ def inlinequery(bot, update):
         InlineQueryResultArticle(
             id=uuid4(),
             title = query + " 太强了",
-            input_message_content=InputTextMessageContent(
-                '\n' +
-                query + '太强了!' +
-                query + '天下第一!' +
-                '为什么' + query + '这么强啊(QAQ)!' +
-                '我什么时候才能有' + query + '一半强啊(TAT)!' +
-                '我要是有' + query + '十分之一强就好了!' +
-                query + '带带窝啊!' +
-                '我也想和' + query + '一样强!'
+            input_message_content = InputTextMessageContent("""{name}太强了!
+{name}天下第一!
+为什么{name}这么强啊(QAQ)!
+我什么时候才能有{name}一半强啊(TAT)!
+我要是有{name}十分之一强就好了!
+{name}带带窝啊!""".format(name=query).strip()
             )
         )
     ]
