@@ -271,13 +271,13 @@ def search_bing(bot, update, args):
 def goltrans(bot, update, args):
     global tr
     text = update.message.text
+    lang = ''
     print(text)
     if text:
-        lang = ''
         if args[0].startwith("'") and args[0].endwith("'"):
             lang = args[0].strip("'").lower()
             text = text.split(' ', 3)[2]
-        if lang == '':
+        else:
             lang = 'zh-cn'
             for c in text:
                 if '\u4e00' <= c <= '\u9fff':

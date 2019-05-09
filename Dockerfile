@@ -1,11 +1,8 @@
-FROM python:3.6
+FROM python:3.6-alpine
 
-RUN curl https://bootstrap.pypa.io/get-pip.py | python
-RUN mkdir /var/bot 
-COPY requirements.txt /var/bot/
+RUN mkdir -p /var/bot 
+COPY *.py data.json requirements.txt /var/bot/
+
 RUN pip install -r /var/bot/requirements.txt
-
-COPY *.py /var/bot/
-COPY data.json /var/bot/
 
 CMD [ "python", "/var/bot/bot.py" ]
