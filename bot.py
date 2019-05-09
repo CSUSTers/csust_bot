@@ -105,7 +105,7 @@ def ban_user(bot, update, user):
     if update.message.chat.type == 'private':
         update.message.reply_text('我觉得布星~')
     elif bot.get_chat_member(chatid, bot.id).status == 'administrator':
-        if bot.get_chat_member(chatid, user_id).status in ['administrator','creator']:
+        if bot.get_chat_member(chatid, user_id).status in ['administrator', 'creator']:
             update.message.reply_text('神秘的力量使我无法满足你的欲望')
         else:
             if 36 < long_long_time < 26240000:
@@ -120,7 +120,7 @@ def ban_user(bot, update, user):
             success = bot.restrict_chat_member(chatid, user_id, until_time, can_send_messages,
                                             can_send_media_messages, can_send_other_messages, can_add_web_page_previews)
             if success:
-                update.message.reply_text('Congratulations! You have been banned! Now enjoy your ' + str(ban_sec) + ' seconds~')
+                update.message.reply_to_message.reply_text('Congratulations! You have been banned! Now enjoy your ' + str(ban_sec) + ' seconds~')
             else:
                 update.message.reply_text('受到电磁干扰...')
     else:
@@ -363,6 +363,14 @@ def inlinequery(bot, update):
     update.inline_query.answer(results)
 
 
+def user_id(bot, update):
+    update.message.reply_text(update.message.from_user.id)
+
+
+def char_id(bot, update):
+    update.message.reply_text(update.message.chat_id)
+
+
 def main(path):
     global data_dict, QnA_dict, links_dict, about_str, \
         question_keys, questions, answers, main_links, friend_links
@@ -400,6 +408,8 @@ def main(path):
     dp.add_handler(CommandHandler('ddg', search_ddg, pass_args=True))
     dp.add_handler(CommandHandler('bing', search_bing, pass_args=True))
     dp.add_handler(CommandHandler('boot', boot))
+    dp.add_handler(CommandHandler('user_id', user_id))
+    dp.add_handler(CommandHandler('chat_id', char_id))
     dp.add_handler(CommandHandler('poweroff', sleep))
     dp.add_handler(CommandHandler('shutdown', sleep))
     dp.add_handler(CommandHandler('no_sticker', no_sticker, pass_args=True))
