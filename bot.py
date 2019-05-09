@@ -245,7 +245,7 @@ def question(bot, update):
     global question_keys, questions, answers
     num = random.choice(question_keys)
     replyText = '第{}个问题: \nQ: {}\nA: {}'.format(num,
-                                                questions[num], answers[num])
+        questions[num], answers[num])
     update.message.reply_text(replyText)
 
 
@@ -258,23 +258,6 @@ def boot(bot, update):
 
 def sleep(bot, update):
     update.message.reply_text('晚安，明天醒来就能看到我哦！')
-
-
-"""
-def chat(bot, update, args):
-    if update.message.chat.type == 'private':
-        message = ''.join(args)
-        if message.__len__() != 0:
-            update.message.reply_text(turing.interact(message))
-        else:
-            chatid = update.message.chat_id
-            if chatid in turing_chat_list:
-                update.message.reply_text('累了~不聊啦~')
-                turing_chat_list.remove(chatid)
-            else:
-                update.message.reply_text('陪你聊聊呗~')
-                turing_chat_list.append(chatid)
-"""
 
 
 def donotsleep(bot, update):
@@ -297,16 +280,6 @@ def no_sticker(bot, update, args):
         bot.send_message(update.message.chat_id, "Don't send sticker!")
         no_stker_chat_dict[chatid] = mode
         stker_dict[chatid] = []
-
-
-"""
-def read_message(bot, update):
-    message = update.message.text
-    sticker = update.message.sticker
-    chatid = update.message.chat_id
-    if chatid in chat_id_list:
-        bot.send_message(chatid, message)
-"""
 
 
 def read_message(bot, update):
