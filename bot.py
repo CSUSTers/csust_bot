@@ -303,8 +303,8 @@ def inlinequery(bot, update):
             input_message_content = InputTextMessageContent("""{name}太强了!
 {name}天下第一!
 为什么{name}这么强啊(QAQ)!
-我什么时候才能有{name}一半强啊(TAT)!
-我要是有{name}十分之一强就好了!
+我什么时候才能有{name}十分之一强啊(TAT)!
+我要是有{name}一半强就好了!
 {name}带带窝啊!""".format(name=query).strip()
             )
         )
@@ -320,7 +320,7 @@ def translangs(bot, update):
     if update.message.chat_id < 0:
         update.reply_text('请在私聊回话查询哦～')
     else:
-        update.read_text("""
+        update.reply_text("""
             `zh-cn` : chinese (simplified)
             `zh-tw` : chinese (traditional)
             `fr` : french
