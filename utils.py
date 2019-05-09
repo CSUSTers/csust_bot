@@ -274,16 +274,15 @@ def goltrans(bot, update, args):
     print(text)
     if text:
         lang = ''
-        if args[0].startwith('`') and args[0].endwith('`'):
-            lang = args[0].strip('`').lower()
-            text = text.split(' ', 1)[1]
-        """
+        if args[0].startwith("'") and args[0].endwith("'"):
+            lang = args[0].strip("'").lower()
+            text = text.split(' ', 3)[2]
         if lang == '':
-            lang = 'zh-CN'
+            lang = 'zh-cn'
             for c in text:
                 if '\u4e00' <= c <= '\u9fff':
                     lang = 'en'
-        """
+                    break
         try:
             if lang:
                 text = tr.translate(text, dest=lang).text
