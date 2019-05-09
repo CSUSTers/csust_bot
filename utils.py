@@ -271,8 +271,8 @@ def goltrans(bot, update, args):
     if args:
         lang = ''
         if args[0].startwith('`') and args[0].endwith('`'):
-            lang = args[0].strip('`')
-            del args[0]
+            lang = args[0].strip('`').lower()
+            args = args[1:]
         text = ' '.join(args)
         """
         if lang == '':
