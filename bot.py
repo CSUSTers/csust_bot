@@ -7,7 +7,7 @@ hello_to_all - Say hello to all group members
 record - 人类的本质就是复读机，Bot也是一样的
 real_record - 复读机...复读机...复读机的开关
 no_sticker - [num] 聊天时仅保留num个sticker，默认为0，小于零或大于100退出no_sticker模式
-gtranslate - [text] 中嘤互译
+gtranslate - [`lang`] [text] 中嘤互译
 google - <Key Words> Search Google...
 ddg - <Key Words> Search DuckDuckGo...
 bing - <Key Words> Search Bing...
@@ -316,6 +316,22 @@ def id(bot, update):
     update.message.reply_text(update.message.chat_id)
 
 
+def translangs(bot, update):
+    if update.message.chat_id < 0:
+        update.reply_text('请在私聊回话查询哦～')
+    else:
+        update.read_text("""
+            `zh-cn` : chinese (simplified)
+            `zh-tw` : chinese (traditional)
+            `fr` : french
+            `de` : german
+            `ja` : japanese
+            `la` : latin
+            `ru` : russian
+            and more...
+        """, parse_mode='Markdown')
+
+
 def main(path):
     global data_dict, QnA_dict, links_dict, about_str, \
         question_keys, questions, answers, main_links, friend_links
@@ -360,6 +376,7 @@ def main(path):
     dp.add_handler(CommandHandler('halt', donotsleep))
     dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
     dp.add_handler(CommandHandler('gtranslate', goltrans, pass_args=True))
+    dp.add_handler(CommandHandler('translangs', translangs))
     dp.add_handler(InlineQueryHandler(inlinequery))
     updater.start_polling()
 

@@ -274,27 +274,25 @@ def goltrans(bot, update, args):
             lang = args[0].strip('`')
             del args[0]
         text = ' '.join(args)
+        """
         if lang == '':
             lang = 'zh-CN'
             for c in text:
                 if '\u4e00' <= c <= '\u9fff':
                     lang = 'en'
+        """
         try:
             tr = Translator()
-            text = tr.translate(text, dest=lang).text
+            if lang:
+                text = tr.translate(text, dest=lang).text
+            else:
+                text = tr.translate(text).text
         except Exception as e:
-            text = e
+            text = '出错了？？？'
+            print(e)
         update.message.reply_text(text)
     else:
-        update.message.reply_text('''想翻译什么呢~
-            'zh-cn': 'chinese (simplified)',
-            'zh-tw': 'chinese (traditional)',
-            'fr': 'french',
-            'de': 'german',
-            'ja': 'japanese',
-            'la': 'latin',
-            'ru': 'russian',
-        ''')
+        update.message.reply_text('想翻译什么呢~\n(私聊中使用 /translangs 可以查看目标语言代码哦)')
 
         
 def for_eachsub(pattern, haystack, fn):
