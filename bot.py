@@ -7,7 +7,7 @@ hello_to_all - Say hello to all group members
 record - 人类的本质就是复读机，Bot也是一样的
 real_record - 复读机...复读机...复读机的开关
 no_sticker - [num] 聊天时仅保留num个sticker，默认为0，小于零或大于100退出no_sticker模式
-gtranslate - [`lang`] [text] 中嘤互译
+gtranslate - [`lang`] [text] 咕果翻译
 google - <Key Words> Search Google...
 ddg - <Key Words> Search DuckDuckGo...
 bing - <Key Words> Search Bing...
@@ -296,20 +296,21 @@ def read_message(bot, update):
 
 def inlinequery(bot, update):
     query = update.inline_query.query
-    results = [
-        InlineQueryResultArticle(
-            id=uuid4(),
-            title = query + " 太强了",
-            input_message_content = InputTextMessageContent("""{name}太强了!
-{name}天下第一!
-为什么{name}这么强啊(QAQ)!
-我什么时候才能有{name}十分之一强啊(TAT)!
-我要是有{name}一半强就好了!
-{name}带带窝啊!""".format(name=query).strip()
+    if query:
+        results = [
+            InlineQueryResultArticle(
+                id=uuid4(),
+                title = query + " 太强了",
+                    input_message_content = InputTextMessageContent("""{name}太强了!
+                    {name}天下第一!
+                    为什么{name}这么强啊(QAQ)!
+                    我什么时候才能有{name}十分之一强啊(TAT)!
+                    我要是有{name}一半强就好了!
+                    {name}带带窝啊!""".format(name=query).strip()
+                )
             )
-        )
-    ]
-    update.inline_query.answer(results)
+        ]
+        update.inline_query.answer(results)
 
 
 def id(bot, update):
