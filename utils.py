@@ -271,10 +271,10 @@ def search_bing(bot, update, args):
 def goltrans(bot, update, args):
     global tr
     text = update.message.text
-    lang = ''
     print(text)
     if args:
-        if args[0].startwith("'") and args[0].endwith("'"):
+        lang = ''
+        if args[0].startswith("'") and args[0].endswith("'"):
             lang = args[0].strip("'").lower()
             text = text.split(' ', 3)[2]
         else:
