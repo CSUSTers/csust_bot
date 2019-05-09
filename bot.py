@@ -347,7 +347,7 @@ def inlinequery(bot, update):
     results = [
         InlineQueryResultArticle(
             id=uuid4(),
-            title="Weather in " + query,
+            title = query + " 太强了",
             input_message_content=InputTextMessageContent(
                 '\n' +
                 query + '太强了!' +
@@ -363,11 +363,7 @@ def inlinequery(bot, update):
     update.inline_query.answer(results)
 
 
-def user_id(bot, update):
-    update.message.reply_text(update.message.from_user.id)
-
-
-def char_id(bot, update):
+def id(bot, update):
     update.message.reply_text(update.message.chat_id)
 
 
@@ -408,16 +404,15 @@ def main(path):
     dp.add_handler(CommandHandler('ddg', search_ddg, pass_args=True))
     dp.add_handler(CommandHandler('bing', search_bing, pass_args=True))
     dp.add_handler(CommandHandler('boot', boot))
-    dp.add_handler(CommandHandler('user_id', user_id))
-    dp.add_handler(CommandHandler('chat_id', char_id))
+    dp.add_handler(CommandHandler('id', id))
     dp.add_handler(CommandHandler('poweroff', sleep))
     dp.add_handler(CommandHandler('shutdown', sleep))
     dp.add_handler(CommandHandler('no_sticker', no_sticker, pass_args=True))
     # dp.add_handler(CommandHandler('chat', chat, pass_args=True))
     dp.add_handler(CommandHandler('halt', donotsleep))
     dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
-    dp.add_handler(InlineQueryHandler(inlinequery))
     dp.add_handler(CommandHandler('gtranslate', goltrans, pass_args=True))
+    dp.add_handler(InlineQueryHandler(inlinequery))
     dp.add_handler(CallbackQueryHandler(cbk))
     updater.start_polling()
 
