@@ -131,7 +131,6 @@ def banmyself(bot, update):
     ban_user(bot, update, update.message.from_user)
 
 
-
 def ban(bot, update):
     if update.message.chat_id > 0:
         update.message.reply_text('你在嗦什么，我怎么听不懂。')
@@ -282,7 +281,6 @@ def donotsleep(bot, update):
     update.message.reply_text('睡你麻痹起来嗨！')
 
 
-
 def no_sticker(bot, update, args):
     mode = 0
     if(len(args) > 0):
@@ -331,17 +329,6 @@ def read_message(bot, update):
             bot.delete_message(chatid, stker_dict[chatid][0])
             del stker_dict[chatid][0]
 
-    
-
-def kbrs(bot, update):
-
-    keyboard = [
-        [InlineKeyboardButton('远神天下第一', callback_data='3')],
-        [InlineKeyboardButton('小明天下第一', callback_data='4')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    bot.send_message(update.message.chat_id, '恐怖如斯？',  reply_markup=reply_markup)
-
 
 def cbk(bot, update):
     query = update.callback_query
@@ -362,7 +349,14 @@ def inlinequery(bot, update):
             id=uuid4(),
             title="Weather in " + query,
             input_message_content=InputTextMessageContent(
-                '\n' + wther(query)
+                '\n' +
+                query + '太强了!' +
+                query + '天下第一!' +
+                '为什么' + query + '这么强啊(QAQ)!' +
+                '我什么时候才能有' + query + '一半强啊(TAT)!' +
+                '我要是有' + query + '十分之一强就好了!' +
+                query + '带带窝啊!' +
+                '我也想和' + query + '一样强!'
             )
         )
     ]
@@ -414,7 +408,6 @@ def main(path):
     dp.add_handler(CommandHandler('weather', weather_qy, pass_args=True))
     dp.add_handler(InlineQueryHandler(inlinequery))
     dp.add_handler(CommandHandler('gtranslate', goltrans, pass_args=True))
-    dp.add_handler(CommandHandler('kbrs', kbrs))
     dp.add_handler(CallbackQueryHandler(cbk))
     updater.start_polling()
 

@@ -286,22 +286,34 @@ def search_bing(bot, update, args):
                      replyText, parse_mode='Markdown')
 
 
-
 def goltrans(bot, update, args):
     if args:
+        lang = ''
+        if args[0].startwith('`') and args[0].endwith('`'):
+            lang = args[0].strip('`')
+            del args[0]
         text = ' '.join(args)
-        flag = 1
-        for c in text:
-            if '\u4e00' <= c <= '\u9fff':
-                flag = 0
-        tr = Translator()
-        if flag:
-            text = tr.translate(text, dest='zh-CN').text
-        else:
-            text = tr.translate(text, dest='en').text
+        if lang == '':
+            lang = 'zh-CN'
+            for c in text:
+                if '\u4e00' <= c <= '\u9fff':
+                    lang = 'en'
+        try:
+            tr = Translator()
+            text = tr.translate(text, dest=lang).text
+        except Exception as e:
+            text = e
         update.message.reply_text(text)
     else:
-        update.message.reply_text('想翻译什么呢~')
+        update.message.reply_text('''想翻译什么呢~
+            'zh-cn': 'chinese (simplified)',
+            'zh-tw': 'chinese (traditional)',
+            'fr': 'french',
+            'de': 'german',
+            'ja': 'japanese',
+            'la': 'latin',
+            'ru': 'russian',
+        ''')
 
         
 def for_eachsub(pattern, haystack, fn):
