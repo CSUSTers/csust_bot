@@ -8,6 +8,7 @@ record - 人类的本质就是复读机，Bot也是一样的
 real_record - 复读机...复读机...复读机的开关
 no_sticker - [num] 聊天时仅保留num个sticker，默认为0，小于零或大于100退出no_sticker模式
 gtranslate - ['lang'] [text] 咕果翻译
+translangs - 查询咕果翻译语言对应代码(私聊可用)
 google - <Key Words> Search Google...
 ddg - <Key Words> Search DuckDuckGo...
 bing - <Key Words> Search Bing...
@@ -302,11 +303,11 @@ def inlinequery(bot, update):
                 id=uuid4(),
                 title = query + " 太强了",
                     input_message_content = InputTextMessageContent("""{name}太强了!
-                    {name}天下第一!
-                    为什么{name}这么强啊(QAQ)!
-                    我什么时候才能有{name}十分之一强啊(TAT)!
-                    我要是有{name}一半强就好了!
-                    {name}带带窝啊!""".format(name=query).strip()
+{name}天下第一!
+为什么{name}这么强啊(QAQ)!
+我什么时候才能有{name}十分之一强啊(TAT)!
+我要是有{name}一半强就好了!
+{name}带带窝啊!""".format(name=query).strip()
                 )
             )
         ]
@@ -322,15 +323,14 @@ def translangs(bot, update):
         update.reply_text('请在私聊回话查询哦～')
     else:
         update.reply_text("""
-            `zh-cn` : chinese (simplified)
-            `zh-tw` : chinese (traditional)
-            `fr` : french
-            `de` : german
-            `ja` : japanese
-            `la` : latin
-            `ru` : russian
-            and more...
-        """, parse_mode='Markdown')
+`zh-cn` : chinese (simplified)
+`zh-tw` : chinese (traditional)
+`fr` : french
+`de` : german
+`ja` : japanese
+`la` : latin
+`ru` : russian
+and more...""".strip(), parse_mode='Markdown')
 
 
 def main(path):
