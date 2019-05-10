@@ -323,14 +323,14 @@ def translangs(bot, update):
         update.reply_text('请在私聊回话查询哦～')
     else:
         update.reply_text("""
-`zh-cn` : chinese (simplified)
-`zh-tw` : chinese (traditional)
-`fr` : french
-`de` : german
-`ja` : japanese
-`la` : latin
-`ru` : russian
-and more...""".strip(), parse_mode='Markdown')
+            `zh-cn` : chinese (simplified)
+            `zh-tw` : chinese (traditional)
+            `fr` : french
+            `de` : german
+            `ja` : japanese
+            `la` : latin
+            `ru` : russian
+            and more...""".strip(), parse_mode='Markdown')
 
 
 def main(path):
