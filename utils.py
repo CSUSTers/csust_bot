@@ -278,6 +278,8 @@ def goltrans(bot, update, args):
             groups = matcher.groups()
             lang = groups[1].strip("'").lower() if groups[1] else ''
             text = groups[2]
+            if not text:
+                update.message.reply_text("嗦点什么呀，同学")
         elif args[0].startswith("'") and args[0].endswith("'"):
             lang = args[0].strip("'").lower()
             text = ' '.join(args[1:])
