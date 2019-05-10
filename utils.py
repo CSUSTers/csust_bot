@@ -276,7 +276,7 @@ def goltrans(bot, update, args):
         matcher = trans_re.match(text)
         if matcher is not None:
             groups = matcher.groups()
-            lang = groups[1].lower() if groups[1] else ''
+            lang = groups[1].strip("'").lower() if groups[1] else ''
             text = groups[2]
         elif args[0].startswith("'") and args[0].endswith("'"):
             lang = args[0].strip("'").lower()
