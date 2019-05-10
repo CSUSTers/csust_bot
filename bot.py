@@ -320,9 +320,9 @@ def id(bot, update):
 
 def translangs(bot, update):
     if update.message.chat_id < 0:
-        update.reply_text('请在私聊回话查询哦～')
+        update.message.reply_text('请在私聊回话查询哦～')
     else:
-        update.reply_text("""
+        update.message.reply_text("""
             `zh-cn` : chinese (simplified)
             `zh-tw` : chinese (traditional)
             `fr` : french
