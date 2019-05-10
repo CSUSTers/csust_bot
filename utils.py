@@ -9,6 +9,7 @@ from re import compile
 import re
 
 tr = Translator()
+trans_re = compile(r"^([\/\w\-]*)\s*(\'[\w\-]*\')?\s*(.*)", re.M|re.U|re.DOTALL)
 
 def url_encode(s: str):
     """
@@ -271,18 +272,27 @@ def search_bing(bot, update, args):
 def goltrans(bot, update, args):
     global tr
     text = update.message.text
-    print(text)
     if args:
         lang = ''
-        if args[0].startswith("'") and args[0].endswith("'"):
+        matcher = trans_re.match(text)
+        if matcher is not None:
+            groups = matcher.groups()
+            lang = groups[1].lower() if groups[1] else ''
+            text = groups[2]
+        elif args[0].startswith("'") and args[0].endswith("'"):
             lang = args[0].strip("'").lower()
-            text = text.split(' ', 3)[2]
+            text = ' '.join(args[1:])
         else:
+            lang = ''
+            text = ' '.join(args)
+
+        if not lang:
             lang = 'zh-cn'
             for c in text:
                 if '\u4e00' <= c <= '\u9fff':
                     lang = 'en'
                     break
+        
         try:
             if lang:
                 text = tr.translate(text, dest=lang).text
