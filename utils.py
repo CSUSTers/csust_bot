@@ -5,11 +5,10 @@ from telegram.ext import Updater
 from telegram import error, Bot
 from googletrans import Translator
 from re import compile
-
 import re
 
 tr = Translator()
-trans_re = compile(r"^([\/\w\-]*)\s*(\'[\w\-]*\')?\s*(.*)", re.M|re.U|re.DOTALL)
+trans_re = compile(r"^([\S]*)\s*(\'[\w\-]*\')?\s*(.*)", re.M|re.U|re.DOTALL)
 
 def url_encode(s: str):
     """
