@@ -349,7 +349,7 @@ def main(path):
     main_links = links_dict["main_links"]
     friend_links = links_dict["friend_links"]
 
-    updater = Updater(token=TOKEN)
+    updater = Updater(token=TOKEN, use_context=True)
     dp = updater.dispatcher
     dp.add_handler(MessageHandler(Filters.text|Filters.sticker|Filters.status_update, read_message))
     dp.add_handler(CommandHandler('banmyself', banmyself))
